@@ -16,13 +16,12 @@ import {checkIsArrayDataFromModal, uniqArrayForModal} from "../../utills/dataUti
 
 const columns: GridColDef[] = [
   { field: "name", headerName: "Название", type: "string" },
-  { field: "responsible", headerName: "Ответственный" },
+  { field: "responsible", headerName: "Отвественный" },
   { field: "responsibleSelect", headerName: "Responsible", type: "select" },
-  { field: "ip", headerName: "ip", type: "string" }
 ];
 
 const Systems: React.FC = () => {
-  const [responsible_select, setResponsible] = React.useState<any>([]);
+  const [responsibleSelect, setResponsible] = React.useState<any>([]);
   const [data, setData] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState<string | undefined>(undefined);
@@ -38,13 +37,14 @@ const Systems: React.FC = () => {
   }, []);
 
   const fetchResponsible = React.useCallback(async () => {
-    const responsible_select = await getResponsible();
-    if (responsible_select.length) {
-      setResponsible(responsible_select);
+    const responsibleSelect = await getResponsible();
+    if (responsibleSelect.length) {
+      setResponsible(responsibleSelect);
     } else {
       setResponsible([]);
     }
   }, []);
+
 
   const handleOpen = React.useCallback((id?: string) => {
     setOpen((openModal) => !openModal);
@@ -52,18 +52,18 @@ const Systems: React.FC = () => {
   }, []);
 
   const handleSetCurrentData = React.useCallback((currentData: any) => {
-    let newObj = uniqArrayForModal(responsible_select, currentData, "responsible");
+    let newObj = uniqArrayForModal(responsibleSelect, currentData, "responsible");
     setEditData(newObj);
     setEditData(currentData);
-  }, [responsible_select]);
+  }, [responsibleSelect]);
 
   const handleAdd = React.useCallback((data: any) => {
     addSystems(
         data.name,
         checkIsArrayDataFromModal(data.responsibleSelect),
-        data.ip,
     );
-  }, []);
+    fetchData();
+  }, [fetchData, responsibleSelect]);
 
   const handleEdit = React.useCallback(
       (data: any) => {
@@ -71,12 +71,11 @@ const Systems: React.FC = () => {
             data.id,
             data.name,
             checkIsArrayDataFromModal(data.responsibleSelect),
-            data.ip,
         );
         fetchData();
         setOpen(false);
       },
-      [fetchData]
+      [fetchData, responsibleSelect]
   );
 
   const handleDelete = React.useCallback(async () => {
@@ -98,27 +97,26 @@ const Systems: React.FC = () => {
             columns={columns}
             openModal={open}
             data={editData || {
-              responsibleSelect: responsible_select,
+              responsibleSelect: responsibleSelect,
             }}
             handleEdit={handleEdit}
             handleAdd={handleAdd}
             handleClose={handleOpen}
             handleDelete={handleDelete}>
           {data.length &&
-              data.map((row: any, index: number) => (
-                  <TableRow
-                      key={`${row.id}${index}`}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      className={styles.table_cell}
-                      onClick={() => {
-                        handleOpen(row.id);
-                        handleSetCurrentData(row);
-                      }}>
-                    <TableCell align="left">{row.name}</TableCell>
-                    <TableCell align="left">{row.responsible}</TableCell>
-                    <TableCell align="left">{row.ip}</TableCell>
-                  </TableRow>
-              ))}
+          data.map((row: any, index: number) => (
+              <TableRow
+                  key={`${row.id}${index}`}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  className={styles.table_cell}
+                  onClick={() => {
+                    handleOpen(row.id);
+                    handleSetCurrentData(row);
+                  }}>
+                <TableCell align="left">{row.name}</TableCell>
+                <TableCell align="left">{row.responsible}</TableCell>
+              </TableRow>
+          ))}
         </TableData>
       </>
   );

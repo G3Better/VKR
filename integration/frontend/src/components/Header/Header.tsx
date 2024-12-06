@@ -30,8 +30,10 @@ const Header: React.FC = () => {
       <header className={styles.header}>
         <NavLink to="/orders">Orders</NavLink>
         {roles.admin === localStorage.getItem("role") && <NavLink to="/users">Users</NavLink>}
-        <NavLink to="/src_systems">Source Systems</NavLink>
-        <NavLink to="/dst_systems">Destination Systems</NavLink>
+        {roles.admin === localStorage.getItem("role") && <NavLink to="/authorizations">Authorizations</NavLink>}
+        {roles.admin === localStorage.getItem("role") && <NavLink to="/contours">Contours</NavLink>}
+        {roles.admin === localStorage.getItem("role") && <NavLink to="/networks">Networks</NavLink>}
+        <NavLink to="/systems">Systems</NavLink>
         <NavLink to="/ips">Ips</NavLink>
         <button onClick={handleClick} className={styles.fullName}>
           {fio}

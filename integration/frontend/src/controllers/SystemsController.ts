@@ -27,8 +27,8 @@ export const deleteSystems = async (id: string) => {
     }
 };
 
-export const editSystems = async (id: number, name: string, responsible: number, ip: string) => {
-    const res = await putRequest(`/api/systems/edit/${id}`, {}, { id, name, responsible, ip });
+export const editSystems = async (id: number, name: string, responsible: number) => {
+    const res = await putRequest(`/api/systems/edit/${id}`, {}, { id, name, responsible });
     if (res) {
         return res;
     } else {
@@ -36,12 +36,12 @@ export const editSystems = async (id: number, name: string, responsible: number,
     }
 };
 
-export const addSystems = async (name: string, responsible: number, ip: string) => {
-    const res = await postRequest(`/api/systems/add`, {}, { name, responsible, ip });
+export const addSystems = async (name: string, responsible: number) => {
+    const res = await postRequest(`/api/systems/add`, {}, { name, responsible });
     if (res) {
         getSystems()
         return res;
     } else {
-        return "Не получилось добавить новое бронирование";
+        return "Не получилось добавить новую систему";
     }
 };

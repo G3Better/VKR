@@ -15,7 +15,7 @@ const pool = mysql.createPool({
     connectionLimit: 5,
     host: "localhost",
     user: "root",
-    database: "integration_v2",
+    database: "integration_v3",
     password: ""
   });
 
@@ -55,6 +55,191 @@ server.post('/api/signUp/:login', (req, res) => {
         return res.json("Успещно зарегистрирован");
     })
 })
+
+// Получение всех типов авторизации
+server.get("/api/authorizations", function(req, res){
+    pool.query("SELECT `id_authorization` as id, `name` as name FROM `authorizations`", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление типа авторизации
+server.delete("/api/authorizations/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM authorizations WHERE id_authorization='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Authorization deleted');
+    });
+});
+
+// Редактирование авторизации
+server.put("/api/authorizations/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name } = req.body;
+    pool.query(`UPDATE authorizations SET name='${name}' WHERE id_authorization='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Authorization updated');
+    });
+});
+
+// Добавление авторизации
+server.post("/api/authorizations/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name } = req.body;
+    pool.query(`INSERT INTO authorizations(id_authorization, name) VALUES ('Null','${name}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Authorization added');
+    });
+});
+
+// Получение всех контуров
+server.get("/api/contours", function(req, res){
+    pool.query("SELECT `id_contour` as id, `name` as name FROM `contours`", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление контура
+server.delete("/api/contours/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM contours WHERE id_contour='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Сontour deleted');
+    });
+});
+
+// Редактирование контура
+server.put("/api/contours/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name } = req.body;
+    pool.query(`UPDATE contours SET name='${name}' WHERE id_contour='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Сontour updated');
+    });
+});
+
+// Добавление контура
+server.post("/api/contours/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name } = req.body;
+    pool.query(`INSERT INTO contours(id_contour, name) VALUES ('Null','${name}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Сontour added');
+    });
+});
+
+// Получение всех ответсвенных
+server.get("/api/responsible", function(req, res){
+    pool.query("SELECT id_users as id, FIO as fio FROM users", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.fio }
+        })
+        res.json(newData);
+    });
+});
+
+// Получение всех Систем-Источников
+server.get("/api/systems", function(req, res){
+    pool.query("SELECT `id_system` as id, `name` as name, FIO as responsible FROM `systems`, `users` WHERE responsible=users.id_users;", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name, responsible: elem.responsible }
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление Системы-Источника
+server.delete("/api/systems/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM systems WHERE id_system='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('System deleted');
+    });
+});
+
+// Редактирование системы источника
+server.put("/api/systems/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name, responsible } = req.body;
+    pool.query(`UPDATE systems SET name='${name}', responsible='${responsible}' WHERE id_system='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('System updated');
+    });
+});
+
+// Добавление системы источника
+server.post("/api/systems/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name, responsible } = req.body;
+    pool.query(`INSERT INTO systems (id_system, name, responsible) VALUES ('NULL','${name}','${responsible}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('System added');
+    });
+});
+
+// Получение всех Networks
+server.get("/api/networks", function(req, res){
+    pool.query("SELECT id_network as id, name as name FROM networks", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление Network
+server.delete("/api/networks/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM networks WHERE id_network='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Network deleted');
+    });
+});
+
+// Редактирование Network
+server.put("/api/networks/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name, desc } = req.body;
+    pool.query(`UPDATE networks SET name='${name}' WHERE id_network='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Network updated');
+    });
+});
+
+// Добавление Network
+server.post("/api/networks/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name, desc } = req.body;
+    pool.query(`INSERT INTO networks(id_network, name) VALUES ('Null','${name}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Network added');
+    });
+});
+
+
+
+
+
 
 // Получение всех пользователей
 server.get("/api/users", function(req, res){
@@ -97,102 +282,6 @@ server.put("/api/users/edit/:id", function (req, res) {
     pool.query(`UPDATE users SET FIO ='${fio}', email ='${email}', post ='${post}', role ='${idRole}', contacts = '${contacts}' WHERE users.id_users = '${id}'`, function(err, data) {
         if (err) return console.error(err);
         res.json('user updated');
-    });
-});
-
-// Получение всех ответсвенных
-server.get("/api/responsible", function(req, res){
-    pool.query("SELECT id_users as id, FIO as fio FROM users WHERE role!='5'", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.fio }
-        })
-        res.json(newData);
-    });
-});
-
-// Получение всех Систем-Источников
-server.get("/api/src_systems", function(req, res){
-    pool.query("SELECT its.id_it_system_src AS id, its.name AS name, u.FIO AS responsible, its.test_host AS test, test_ip.ip AS test_ip, its.cert_host AS cert, cert_ip.ip AS cert_ip, its.prod_host AS prod, prod_ip.ip AS prod_ip  FROM it_system_src its JOIN users u ON its.responsible = u.id_users LEFT JOIN ip_address test_ip ON its.test_ip = test_ip.id_ip LEFT JOIN ip_address cert_ip ON its.cert_ip = cert_ip.id_ip LEFT JOIN ip_address prod_ip ON its.prod_ip = prod_ip.id_ip", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name, responsible: elem.responsible, test: elem.test, test_ip: elem.test_ip, cert: elem.cert, cert_ip: elem.cert_ip, prod: elem.prod, prod_ip: elem.prod_ip }
-        })
-        res.json(newData);
-    });
-});
-
-// Удаление Системы-Источника
-server.delete("/api/src_systems/delete/:id", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { id } = req.body;
-    pool.query(`DELETE FROM it_system_src WHERE id_it_system_src='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Src It System deleted');
-    });
-});
-
-// Редактирование системы источника
-server.put("/api/src_systems/edit/:id", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { id, name, responsible, test, test_ip, cert, cert_ip, prod, prod_ip } = req.body;
-    pool.query(`UPDATE it_system_src SET name='${name}', responsible='${responsible}', test_host='${test}', test_ip='${test_ip}', cert_host='${cert}', cert_ip='${cert_ip}', prod_host='${prod}', prod_ip='${prod_ip}' WHERE id_it_system_src='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Src It System updated');
-    });
-});
-
-// Добавление системы источника
-server.post("/api/src_systems/add", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { name, responsible, test, test_ip, cert, cert_ip, prod, prod_ip } = req.body;
-    pool.query(`INSERT INTO it_system_src (id_it_system_src, name, responsible, test_host, test_ip, cert_host, cert_ip, prod_host, prod_ip) VALUES ('NULL','${name}','${responsible}','${test}','${test_ip}','${cert}','${cert_ip}','${prod}','${prod_ip}')`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Src It System added');
-    });
-});
-
-// Получение всех Систем-Получателей
-server.get("/api/dst_systems", function(req, res){
-    pool.query("SELECT its.id_it_system_dst AS id, its.name AS name, u.FIO AS responsible, its.test_host AS test, test_ip.ip AS test_ip, its.cert_host AS cert, cert_ip.ip AS cert_ip, its.prod_host AS prod, prod_ip.ip AS prod_ip  FROM it_system_dst its JOIN users u ON its.responsible = u.id_users LEFT JOIN ip_address test_ip ON its.test_ip = test_ip.id_ip LEFT JOIN ip_address cert_ip ON its.cert_ip = cert_ip.id_ip LEFT JOIN ip_address prod_ip ON its.prod_ip = prod_ip.id_ip", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name, responsible: elem.responsible, test: elem.test, test_ip: elem.test_ip, cert: elem.cert, cert_ip: elem.cert_ip, prod: elem.prod, prod_ip: elem.prod_ip   }
-        })
-        res.json(newData);
-    });
-});
-
-// Удаление системы получателя
-server.delete("/api/dst_systems/delete/:id", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { id } = req.body;
-    pool.query(`DELETE FROM it_system_dst WHERE id_it_system_dst='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('It Dst System deleted');
-    });
-});
-
-// Редактирование системы получателя
-server.put("/api/dst_systems/edit/:id", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { id, name, responsible, ip } = req.body;
-    pool.query(`UPDATE it_system_dst SET name='${name}', responsible='${responsible}', test_host='${test}', test_ip='${test_ip}', cert_host='${cert}', cert_ip='${cert_ip}', prod_host='${prod}', prod_ip='${prod_ip}' WHERE id_it_system_dst='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('It Dst System updated');
-    });
-});
-
-// Добавление системы получателя
-server.post("/api/dst_systems/add", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { name, responsible, ip } = req.body;
-    pool.query(`INSERT INTO it_system_dst (id_it_system_dst, name, responsible, test_host, test_ip, cert_host, cert_ip, prod_host, prod_ip) VALUES ('NULL','${name}','${responsible}','${test}','${test_ip}','${cert}','${cert_ip}','${prod}','${prod_ip}')`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('It Dst System added');
     });
 });
 
