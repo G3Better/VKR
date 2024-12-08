@@ -36,7 +36,7 @@ server.post('/api/signIn/:login', (req, res) => {
     if(!req.body) return res.sendStatus(400);
     const { login, password } = req.body;
 
-    pool.query(`Select * from users INNER JOIN roles ON role = roles.id_roles where users.login = '${login}' AND users.password = '${password}'`, (err, data) => {
+    pool.query(`Select * from users INNER JOIN roles ON role = roles.id_role where users.login = '${login}' AND users.password = '${password}'`, (err, data) => {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         console.log(data);
@@ -236,14 +236,180 @@ server.post("/api/networks/add", function (req, res) {
     });
 });
 
+// Получение всех RequestRates
+server.get("/api/request_rates", function(req, res){
+    pool.query("SELECT id_request_rate as id, rate as name FROM request_rates", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name}
+        })
+        res.json(newData);
+    });
+});
 
+// Удаление RequestRates
+server.delete("/api/request_rates/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM request_rates WHERE id_request_rate='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Request Rates deleted');
+    });
+});
+
+// Редактирование RequestRates
+server.put("/api/request_rates/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name } = req.body;
+    pool.query(`UPDATE request_rates SET rate='${name}' WHERE id_request_rate='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Request Rates updated');
+    });
+});
+
+// Добавление RequestRates
+server.post("/api/request_rates/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name } = req.body;
+    pool.query(`INSERT INTO networks(id_request_rate, rate) VALUES ('Null','${name}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Request Rates added');
+    });
+});
+
+// Получение всех Roles
+server.get("/api/roles", function(req, res){
+    pool.query("SELECT id_role as id, name as name FROM roles", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление Role
+server.delete("/api/roles/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM roles WHERE id_role='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Role deleted');
+    });
+});
+
+// Редактирование Role
+server.put("/api/roles/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name } = req.body;
+    pool.query(`UPDATE roles SET name='${name}' WHERE id_role='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Role updated');
+    });
+});
+
+// Добавление Role
+server.post("/api/roles/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name } = req.body;
+    pool.query(`INSERT INTO roles(id_role, name) VALUES ('Null','${name}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Roles added');
+    });
+});
+
+// Получение всех Status
+server.get("/api/status", function(req, res){
+    pool.query("SELECT id_status as id, name as name FROM status", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление Status
+server.delete("/api/status/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM status WHERE id_status='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Status deleted');
+    });
+});
+
+// Редактирование Status
+server.put("/api/status/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name } = req.body;
+    pool.query(`UPDATE status SET name='${name}' WHERE id_status='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Status updated');
+    });
+});
+
+// Добавление Status
+server.post("/api/status/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name } = req.body;
+    pool.query(`INSERT INTO status(id_status, name) VALUES ('Null','${name}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Status added');
+    });
+});
+
+// Получение всех Endpoints
+server.get("/api/endpoints", function(req, res){
+    pool.query("SELECT id_endpoint as id, endpoints.name as name, ip as ip, port as port, network as network, contour as contour, it_system as system, description as 'desc' FROM endpoints, contours, systems, networks WHERE network=networks.id_network and contour=contours.id_contour and it_system=systems.id_system", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name, ip: elem.ip, port: elem.port, network: elem.network, contour: elem.contour, system: elem.system, desc: elem.desc}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление Endpoints
+server.delete("/api/endpoints/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM endpoints WHERE id_endpoint='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Endpoints deleted');
+    });
+});
+
+// Редактирование Endpoints
+server.put("/api/endpoints/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name, ip, port, network, contour, system, desc } = req.body;
+    pool.query(`UPDATE endpoints SET name='${name}', ip='${ip}', port='${port}', network='${network}', contour='${contour}', it_system='${system}', description='${desc}' WHERE id_endpoint='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Endpoint updated');
+    });
+});
+
+// Добавление Status
+server.post("/api/endpoints/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name, ip, port, network, contour, system, desc } = req.body;
+    pool.query(`INSERT INTO endpoints(id_endpoint, name, ip, port, network, contour, it_system, description) VALUES (NULL,'${name}','${ip}','${port}','${network}','${contour}','${system}','${desc}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Endpoints added');
+    });
+});
 
 
 
 
 // Получение всех пользователей
 server.get("/api/users", function(req, res){
-    pool.query("SELECT FIO as fio, roles.name as role, users.id_users as id, users.email as email, users.post as post, users.contacts as contacts FROM users INNER JOIN roles ON role=roles.id_roles", function(err, data) {
+    pool.query("SELECT FIO as fio, roles.name as role, users.id_users as id, users.email as email, users.post as post, users.contacts as contacts FROM users INNER JOIN roles ON role=roles.id_role", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -259,7 +425,7 @@ server.get("/api/roles", function(req, res){
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
-            return { id: elem.id_roles, role: elem.name}
+            return { id: elem.id_role, name: elem.name}
         })
         res.json(newData);
     });
@@ -274,6 +440,16 @@ server.delete("/api/users/delete/:id", function (req, res) {
         res.json('delete user');
     });
 });
+
+// Добавление пользователя
+server.post('/api/users/add', (req, res) => {
+    if(!req.body) return res.sendStatus(400);
+    const { fio, email, post, contacts, login, password } = req.body;
+    pool.query(`INSERT INTO users (id_users, FIO, email, post, contacts, role, login, password) VALUES ('NULL','${fio}','${email}','${post}','${contacts}','1','${login}','${password}')`, (err, data) => {
+        if (err) return console.error(err);
+        return res.json("пользователь добавлен");
+    })
+})
 
 // Редактирование пользователя
 server.put("/api/users/edit/:id", function (req, res) {
@@ -359,7 +535,7 @@ server.get("/api/authorization", function(req, res){
 
 // Получение заявок
 server.get("/api/orders", function(req, res){
-    pool.query("SELECT id_order as id_order, it_system_src.name as source_system, it_system_dst.name as dest_system, users.FIO as customer, authorization.name as authorization, request_rate.rate as request_rate, status.name AS status, description, swagger FROM `order`, it_system_src, it_system_dst, users, authorization, request_rate, status WHERE source_system=it_system_src.id_it_system_src AND dest_system=it_system_dst.id_it_system_dst AND customer=users.id_users AND authorization=authorization.id_authorization AND request_rate=request_rate.id_request_rate AND status=status.id_status", function(err, data) {
+    pool.query("SELECT id_order as id_order, it_system_src.name as source_system, it_system_dst.name as dest_system, users.FIO as customer, authorization.name as authorization, request_rate.rate as request_rate, status.name AS status, description, swagger FROM `orders`, it_system_src, it_system_dst, users, authorization, request_rate, status WHERE source_system=it_system_src.id_it_system_src AND dest_system=it_system_dst.id_it_system_dst AND customer=users.id_users AND authorization=authorization.id_authorization AND request_rate=request_rate.id_request_rate AND status=status.id_status", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -373,7 +549,7 @@ server.get("/api/orders", function(req, res){
 server.delete("/api/orders/delete/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const { id } = req.body;
-    pool.query("DELETE FROM `order` WHERE id_order='"+id+"'", function(err, data) {
+    pool.query("DELETE FROM `orders` WHERE id_order='"+id+"'", function(err, data) {
         if (err) return console.error(err);
         res.json('Order deleted');
     });
@@ -384,7 +560,7 @@ server.put("/api/orders/edit/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const { id, source_system, dest_system, request_rate, status, authorization, customer, description, swagger } = req.body;
     console.log(req.body);
-    pool.query("UPDATE `order` SET source_system="+source_system+", dest_system="+dest_system+", customer="+customer+", authorization='"+authorization+"', request_rate='"+request_rate+"', status='"+status+"', description='"+description+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
+    pool.query("UPDATE `orders` SET source_system="+source_system+", dest_system="+dest_system+", customer="+customer+", authorization='"+authorization+"', request_rate='"+request_rate+"', status='"+status+"', description='"+description+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
         if (err) return console.error(err);
         res.json('orders updated');
     });

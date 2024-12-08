@@ -3,6 +3,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import TableData from "../../UI/Table/TableData";
 import {
+  addUser,
   deleteUser,
   editUser,
   getUsers,
@@ -14,6 +15,7 @@ import {
 } from "../../utills/dataUtil";
 import Header from "../Header/Header";
 import styles from "./Users.module.sass";
+import {addOrders} from "../../controllers/OrdersController";
 
 const columns: GridColDef[] = [
   { field: "fio", headerName: "ФИО", type: "string" },
@@ -21,7 +23,7 @@ const columns: GridColDef[] = [
   { field: "post", headerName: "Должность", type: "string" },
   { field: "contacts", headerName: "Иные контакты", type: "string" },
   { field: "role", headerName: "Роль" },
-  { field: "roleSelect", headerName: "Role", type: "select" },
+  { field: "roleSelect", headerName: "Роль", type: "select" },
 ];
 
 const Users: React.FC = () => {
@@ -63,6 +65,17 @@ const Users: React.FC = () => {
     [dataRoles]
   );
 
+  const handleAdd = React.useCallback((data: any) => {
+    addUser(
+        data.fio,
+        data.email,
+        data.post,
+        data.contacts,
+        checkIsArrayDataFromModal(data.roleSelect)
+    );
+    fetchData();
+  }, [fetchData]);
+
   const handleEdit = React.useCallback((data: any) => {
     editUser(
       data.id,
@@ -92,10 +105,12 @@ const Users: React.FC = () => {
       <Header />
       <h2 className={styles.users_title}>Users</h2>
           <TableData
-        
+        isShowAddBtn={false}
         columns={columns}
         openModal={open}
-        data={editData}
+        data={editData || {
+          roleSelect: dataRoles,
+        }}
         handleClose={handleOpen}
         handleEdit={handleEdit}
         handleDelete={handleDelete}>

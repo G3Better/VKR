@@ -14,6 +14,7 @@ import MiniModal from "../Modals/MiniModal/MiniModal";
 import styles from "./TableData.module.sass";
 
 interface ITable {
+  isShowAddBtn?: boolean;
   columns: GridColDef[];
   children: any;
   handleAdd?: (data: any) => void;
@@ -25,6 +26,7 @@ interface ITable {
   fetchData?: any;
 }
 const TableData: React.FC<ITable> = ({
+  isShowAddBtn=true,
   columns,
   children,
   handleAdd,
@@ -42,6 +44,7 @@ const TableData: React.FC<ITable> = ({
 
   return (
     <div>
+      {isShowAddBtn && (
           <div className={styles.add_btn}>
             <Button
               onClick={handleShowAddModal}
@@ -51,7 +54,7 @@ const TableData: React.FC<ITable> = ({
               sx={{ width: "25ch" }}>
               Add
             </Button>
-          </div>
+          </div>)}
       <TableContainer component={Paper} className={styles.table}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
