@@ -1,6 +1,4 @@
 export const uniqArrayForModal = (data: any, currentData: any, field: string) => {
-    console.log("Дата=", data);
-    console.log("CurrentДата=", currentData);
     const index = data?.findIndex(
         (el: { id: number; name: string }) => el.name === currentData[field]
     );
@@ -8,6 +6,7 @@ export const uniqArrayForModal = (data: any, currentData: any, field: string) =>
         (el: { id: number; name: string }) => el.name !== currentData[field]
     );
     newObj.unshift(data[index]);
+    console.log(currentData);
     return Object.assign(currentData, { [`${field}Select`]: newObj });
 }
 

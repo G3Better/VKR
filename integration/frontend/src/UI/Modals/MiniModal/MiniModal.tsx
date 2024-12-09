@@ -6,6 +6,7 @@ import EditModal from "../EditModal/EditModal";
 import styles from "./MiniModal.module.sass";
 
 interface IMiniModal {
+  isShowGetModel?: boolean;
   open?: boolean;
   handleClose: () => void;
   handleEdit: (data: any) => void;

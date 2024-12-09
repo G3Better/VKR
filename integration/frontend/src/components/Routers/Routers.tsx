@@ -4,7 +4,8 @@ import Login from "../Login/Login";
 import Registr from "../Registration/Registr";
 import ProtectedRouters from "./ProtectedRouters";
 import Users from "../Users/Users";
-import Orders from "../Orders/Orders";
+import Orders_table from "../Orders_table/Orders_table";
+import Orders from "../Orders_v2/Orders";
 import Systems from "../Systems/Systems";
 import Networks from "../Networks/Networks";
 import Ips from "../Ips/Ips";
@@ -15,7 +16,6 @@ import RequestRates from "../RequestRates/RequestRates";
 import Authorizations from "../Authorizations/Authorizations";
 import Contours from "../Contours/Contours";
 import {roles} from "../../utills/roleUtills";
-import {getAuthorizations} from "../../controllers/AuthorizationsController";
 
 const Routers: React.FC = () => {
   return (
@@ -32,7 +32,8 @@ const Routers: React.FC = () => {
           {roles.client !== localStorage.getItem("role") && <Route path="/roles" element={<Roles />} />}
           {roles.client !== localStorage.getItem("role") && <Route path="/status" element={<Status />} />}
           {roles.client !== localStorage.getItem("role") && <Route path="/endpoints" element={<Endpoints />} />}
-          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders" element={<Orders_table />} />
+          <Route path="/order/:id" element={<Orders />} />
           <Route path="/systems" element={<Systems/>} />
           <Route path="/ips" element={<Ips/>} />
         </Route>

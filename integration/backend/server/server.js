@@ -56,6 +56,48 @@ server.post('/api/signUp/:login', (req, res) => {
     })
 })
 
+// Получение всех Ip
+server.get("/api/ips", function(req, res){
+    pool.query("SELECT id_ip as id, ip as name, description FROM ip_address", function(err, data) {
+        if (err) return console.error(err);
+        if(!data.length) return res.sendStatus(400);
+        const newData = data.map((elem) => {
+            return { id: elem.id, name: elem.name, desc: elem.description}
+        })
+        res.json(newData);
+    });
+});
+
+// Удаление Ip
+server.delete("/api/ips/delete/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    pool.query(`DELETE FROM ip_address WHERE id_ip='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Ip deleted');
+    });
+});
+
+// Редактирование Ip
+server.put("/api/ips/edit/:id", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { id, name, desc } = req.body;
+    pool.query(`UPDATE ip_address SET ip='${name}', description='${desc}' WHERE id_ip='${id}'`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Ip updated');
+    });
+});
+
+// Добавление Ip
+server.post("/api/ips/add", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const { name, desc } = req.body;
+    pool.query(`INSERT INTO ip_address(id_ip, ip, description) VALUES ('Null','${name}','${desc}')`, function(err, data) {
+        if (err) return console.error(err);
+        res.json('Ip added');
+    });
+});
+
 // Получение всех типов авторизации
 server.get("/api/authorizations", function(req, res){
     pool.query("SELECT `id_authorization` as id, `name` as name FROM `authorizations`", function(err, data) {
@@ -364,7 +406,7 @@ server.post("/api/status/add", function (req, res) {
 
 // Получение всех Endpoints
 server.get("/api/endpoints", function(req, res){
-    pool.query("SELECT id_endpoint as id, endpoints.name as name, ip as ip, port as port, network as network, contour as contour, it_system as system, description as 'desc' FROM endpoints, contours, systems, networks WHERE network=networks.id_network and contour=contours.id_contour and it_system=systems.id_system", function(err, data) {
+    pool.query("SELECT id_endpoint as id, endpoints.name as name, ip as ip, port as port, networks.name as network, contours.name as contour, systems.name as system, description as 'desc' FROM endpoints, contours, systems, networks WHERE network=networks.id_network and contour=contours.id_contour and it_system=systems.id_system", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -461,85 +503,27 @@ server.put("/api/users/edit/:id", function (req, res) {
     });
 });
 
-// Получение систем-источников для заказов
-server.get("/api/src_systems_order", function(req, res){
-    pool.query("SELECT id_it_system_src as id, name as name FROM it_system_src", function(err, data) {
+// Получение заявок для общей таблицы
+server.get("/api/orders_table", function(req, res){
+    pool.query("SELECT orders.id_order AS id_order, orders.title AS title, source_systems.name AS source, dest_systems.name AS dest, status.name AS status FROM orders JOIN systems AS source_systems ON orders.source_system = source_systems.id_system JOIN systems AS dest_systems ON orders.dest_system = dest_systems.id_system JOIN status ON orders.status = status.id_status", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name }
+            return { id: elem.id_order, title: elem.title, source: elem.source, dest: elem.dest, status: elem.status }
         })
         res.json(newData);
     });
 });
 
-// Получение систем-получателей для заказов
-server.get("/api/dst_systems_order", function(req, res){
-    pool.query("SELECT id_it_system_dst as id, name as name FROM it_system_dst", function(err, data) {
+// Получение заявок для текущей таблицы
+server.get("/api/orders/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id } = req.body;
+    console.log(id);
+    pool.query("SELECT o.id_order AS id, o.title AS title, src.name AS source, dest.name AS dest, test_ep.name AS test, cert_ep.name AS cert, prod_ep.name AS prod, rr.rate AS rate, s.name AS status, a.name AS authorization, u.FIO AS customer, o.isAcceptedByIS AS isAcceptedByIS, o.isAcceptedByCorpArch AS isAcceptedByCorpArch, o.isAcceptedByArc AS isAcceptedByArc, o.description AS 'desc', o.swagger AS swagger FROM orders o JOIN systems src ON o.source_system = src.id_system JOIN systems dest ON o.dest_system = dest.id_system JOIN endpoints test_ep ON o.test_endpoint = test_ep.id_endpoint JOIN endpoints cert_ep ON o.cert_endpoint = cert_ep.id_endpoint JOIN endpoints prod_ep ON o.prod_endpoint = prod_ep.id_endpoint JOIN request_rates rr ON o.request_rate = rr.id_request_rate JOIN status s ON o.status = s.id_status JOIN authorizations a ON o.authorization = a.id_authorization JOIN users u ON o.customer = u.id_users WHERE o.id_order='"+id+"'", function(err, data) {
         if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name }
-        })
-        res.json(newData);
-    });
-});
-
-// Получение владельца для заявки
-server.get("/api/users_order", function(req, res){
-    pool.query("SELECT id_users as id, FIO as name FROM users", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name }
-        })
-        res.json(newData);
-    });
-});
-
-// Получение частоты вызова для заказов
-server.get("/api/requests_rate", function(req, res){
-    pool.query("SELECT id_request_rate as id, rate as rate FROM request_rate", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.rate }
-        })
-        res.json(newData);
-    });
-});
-
-// Получение статусов для заказов
-server.get("/api/statuses", function(req, res){
-    pool.query("SELECT id_status as id, name as name FROM status", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name }
-        })
-        res.json(newData);
-    });
-});
-
-// Получение типов авторизации для заказов
-server.get("/api/authorization", function(req, res){
-    pool.query("SELECT id_authorization as id, name as name FROM authorization", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name }
-        })
-        res.json(newData);
-    });
-});
-
-// Получение заявок
-server.get("/api/orders", function(req, res){
-    pool.query("SELECT id_order as id_order, it_system_src.name as source_system, it_system_dst.name as dest_system, users.FIO as customer, authorization.name as authorization, request_rate.rate as request_rate, status.name AS status, description, swagger FROM `orders`, it_system_src, it_system_dst, users, authorization, request_rate, status WHERE source_system=it_system_src.id_it_system_src AND dest_system=it_system_dst.id_it_system_dst AND customer=users.id_users AND authorization=authorization.id_authorization AND request_rate=request_rate.id_request_rate AND status=status.id_status", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id_order, source: elem.source_system, dest: elem.dest_system, customer: elem.customer, authorization: elem.authorization, request_rate: elem.request_rate, status: elem.status, description: elem.description, swagger: elem.swagger   }
+            return { id: elem.id, title: elem.title, source: elem.source, dest: elem.dest, test: elem.test, cert: elem.cert, prod: elem.prod, rate: elem.rate, statu: elem.status, auth: elem.authorization, customer: elem.customer, isAcceptedByIS: elem.isAcceptedByIS, isAcceptedByCorpArch: elem.isAcceptedByCorpArch, isAcceptedByArc: elem.isAcceptedByArc, desc: elem.desc, swagger: elem.swagger}
         })
         res.json(newData);
     });
@@ -576,44 +560,3 @@ server.post("/api/orders/add", function (req, res) {
     });
 });
 
-// Получение всех Ip
-server.get("/api/ips", function(req, res){
-    pool.query("SELECT id_ip as id, ip as name, description FROM ip_address", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name, desc: elem.description}
-        })
-        res.json(newData);
-    });
-});
-
-// Удаление Ip
-server.delete("/api/ips/delete/:id", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { id } = req.body;
-    pool.query(`DELETE FROM ip_address WHERE id_ip='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Ip deleted');
-    });
-});
-
-// Редактирование Ip
-server.put("/api/ips/edit/:id", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { id, name, desc } = req.body;
-    pool.query(`UPDATE ip_address SET ip='${name}', description='${desc}' WHERE id_ip='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Ip updated');
-    });
-});
-
-// Добавление Ip
-server.post("/api/ips/add", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { name, desc } = req.body;
-    pool.query(`INSERT INTO ip_address(id_ip, ip, description) VALUES ('Null','${name}','${desc}')`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Ip added');
-    });
-});

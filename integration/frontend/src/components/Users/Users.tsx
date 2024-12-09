@@ -15,7 +15,6 @@ import {
 } from "../../utills/dataUtil";
 import Header from "../Header/Header";
 import styles from "./Users.module.sass";
-import {addOrders} from "../../controllers/OrdersController";
 
 const columns: GridColDef[] = [
   { field: "fio", headerName: "ФИО", type: "string" },

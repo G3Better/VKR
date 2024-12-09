@@ -12,9 +12,13 @@ import { roles } from "../../utills/roleUtills";
 import AddModal from "../Modals/AddModal/AddModal";
 import MiniModal from "../Modals/MiniModal/MiniModal";
 import styles from "./TableData.module.sass";
+import GetModal from "../Modals/GetModal/GetModal";
 
 interface ITable {
+  row_id?: string | undefined;
   isShowAddBtn?: boolean;
+  isShowEditBtns?: boolean;
+  isShowGetModel?: boolean;
   columns: GridColDef[];
   children: any;
   handleAdd?: (data: any) => void;
@@ -26,7 +30,10 @@ interface ITable {
   fetchData?: any;
 }
 const TableData: React.FC<ITable> = ({
+  row_id,
   isShowAddBtn=true,
+  isShowEditBtns=true,
+  isShowGetModel=false,
   columns,
   children,
   handleAdd,
@@ -73,6 +80,7 @@ const TableData: React.FC<ITable> = ({
         </Table>
       </TableContainer>
         <>
+          {isShowEditBtns && (
           <MiniModal
             open={openModal}
             handleClose={handleClose}
@@ -80,7 +88,13 @@ const TableData: React.FC<ITable> = ({
             handleEdit={handleEdit}
             data={data}
             fields={columns}
-          />
+          />)}
+          {isShowGetModel && (
+          <GetModal
+            row_id={row_id}
+            open={openModal}
+            handleClose={handleClose}
+          />)}
           <AddModal
             isShow={isShowAddModal}
             handleAdd={handleAdd}
