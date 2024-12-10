@@ -26,14 +26,53 @@
   border: 1px solid #ccc
   border-radius: 4px
   box-sizing: border-box
-  margin-left: 2%
+  margin-left: 35px
   text-align: center
+
+.input_title
+  width: 50%
+  padding: 10px
+  border: 1px solid #ccc
+  border-radius: 4px
+  box-sizing: border-box
+  margin-left: 35px
+  text-align: left
 
 // Контейнер для двух полей
 .fieldContainer_id
   display: flex // Используем flexbox для горизонтального расположения
   gap: 20px // Расстояние между полями (можно настроить)
   align-items: center // Выравниваем элементы по вертикали
+  margin-bottom: 10px
+
+// Контейнер для полей
+.fieldContainer
+  display: flex
+  gap: 20px // Расстояние между полями (можно настроить)
+  align-items: center // Выравниваем элементы по вертикали
+  margin-bottom: 10px
+
+// Контейнер для двух полей
+.fieldContainer_systems
+  display: flex // Используем flexbox для горизонтального расположения
+  gap: 20px // Расстояние между полями (можно настроить)
+  align-items: center // Выравниваем элементы по вертикали
+  margin-bottom: 10px
+
+// Контейнер для трёх полей
+.fieldContainer_endpoints
+  display: flex // Используем flexbox для горизонтального расположения
+  gap: 20px // Расстояние между полями (можно настроить)
+  align-items: center // Выравниваем элементы по вертикали
+  margin-bottom: 10px
+
+// Контейнер для двух полей
+.fieldContainer_auth_rr
+  display: flex // Используем flexbox для горизонтального расположения
+  gap: 20px // Расстояние между полями (можно настроить)
+  align-items: center // Выравниваем элементы по вертикали
+  margin-bottom: 10px
+
 
 // Общий стиль для каждого поля
 .field
@@ -41,3 +80,21 @@
   flex-direction: column // Располагаем label и input вертикально
   flex: auto // Поля занимают равное пространство
 
+// Стиль для полей выбора
+.select
+  width: 25%
+  padding: 10px
+  border: 1px solid #ccc
+  border-radius: 4px
+  box-sizing: border-box
+  text-align: left
+
+// Стиль для полей выбора
+.select_status
+  width: 25%
+  padding: 10px
+  border: 1px solid #ccc
+  border-radius: 4px
+  box-sizing: border-box
+  margin-left: 3.7%
+  text-align: left

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Дек 10 2024 г., 22:53
+-- Время создания: Дек 10 2024 г., 15:25
 -- Версия сервера: 10.4.32-MariaDB
 -- Версия PHP: 8.2.12
 
@@ -84,7 +84,7 @@ CREATE TABLE `endpoints` (
 
 INSERT INTO `endpoints` (`id_endpoint`, `name`, `ip`, `port`, `network`, `contour`, `system`, `description`) VALUES
 (7, 'https://test.qwerty1', '10.12.10.12', '443', 1, 1, 8, NULL),
-(8, 'https://test.qwerty2', '10.13.10.13', '443', 1, 1, 8, 'null');
+(8, 'https://test.qwerty1', '10.13.10.13', '443', 1, 1, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -122,9 +122,9 @@ CREATE TABLE `orders` (
   `test_endpoint` int(11) DEFAULT NULL,
   `cert_endpoint` int(11) DEFAULT NULL,
   `prod_endpoint` int(11) NOT NULL,
-  `isAcceptedByIS` tinyint(1) NOT NULL DEFAULT 0,
-  `isAcceptedByCorpArch` tinyint(1) NOT NULL DEFAULT 0,
-  `isAcceptedByArc` tinyint(1) NOT NULL DEFAULT 0,
+  `isAcceptedByIS` tinyint(1) DEFAULT NULL,
+  `isAcceptedByCorpArch` tinyint(1) DEFAULT NULL,
+  `isAcceptedByArc` tinyint(1) DEFAULT NULL,
   `description` varchar(10000) NOT NULL,
   `swagger` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -134,8 +134,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id_order`, `title`, `source_system`, `dest_system`, `request_rate`, `status`, `authorization`, `customer`, `test_endpoint`, `cert_endpoint`, `prod_endpoint`, `isAcceptedByIS`, `isAcceptedByCorpArch`, `isAcceptedByArc`, `description`, `swagger`) VALUES
-(13, 'Тестовая система 1->2', 7, 8, 2, 14, 1, 2, NULL, 7, 8, 0, 0, 1, 'Тестовая интеграция 1', ''),
-(14, 'Тестовая система 2->1', 8, 7, 5, 6, 3, 2, NULL, NULL, 8, 1, 0, 1, 'Тестовая интеграция 2', '');
+(13, 'Тестовая система 1->2', 7, 8, 2, 14, 1, 2, NULL, NULL, 8, NULL, NULL, 1, 'Тестовая интеграция 1', ''),
+(14, 'Тестовая система 2->1', 8, 7, 5, 6, 3, 2, NULL, NULL, 8, 1, NULL, NULL, 'Тестовая интеграция 2', '');
 
 -- --------------------------------------------------------
 
@@ -285,7 +285,6 @@ ALTER TABLE `contours`
 --
 ALTER TABLE `endpoints`
   ADD PRIMARY KEY (`id_endpoint`),
-  ADD UNIQUE KEY `name` (`name`),
   ADD KEY `network` (`network`,`contour`,`system`),
   ADD KEY `contour` (`contour`),
   ADD KEY `system` (`system`);

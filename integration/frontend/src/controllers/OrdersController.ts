@@ -1,7 +1,7 @@
 import { deleteRequest, getRequest, postRequest, putRequest } from "../axios/http"
 
 export const getOrders = async (id: string) => {
-    const data = await postRequest(`/api/order/${id}`, {}, { id });
+    const data = postRequest(`/api/order/${id}`, {}, { id });
     if (data) {
         return data;
     } else {
