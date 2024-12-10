@@ -8,7 +8,6 @@ import Orders_table from "../Orders_table/Orders_table";
 import Orders from "../Orders_v2/Orders";
 import Systems from "../Systems/Systems";
 import Networks from "../Networks/Networks";
-import Ips from "../Ips/Ips";
 import Roles from "../Roles/Roles";
 import Endpoints from "../Endpoints/Endpoints";
 import Status from "../Status/Status";
@@ -35,7 +34,6 @@ const Routers: React.FC = () => {
           <Route path="/orders" element={<Orders_table />} />
           <Route path="/order/:id" element={<Orders />} />
           <Route path="/systems" element={<Systems/>} />
-          <Route path="/ips" element={<Ips/>} />
         </Route>
       </Routes>
     </Router>

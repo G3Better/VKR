@@ -37,11 +37,12 @@ const Orders: React.FC = () => {
   const fetchData = React.useCallback(async () => {
     const currentUrl = window.location.pathname; // Например, "/order/13"
     const urlParts = currentUrl.split("/"); // Разделяем строку по "/"
-    const orderId = urlParts[urlParts.length - 1]; // Берем последний элемент массива (ID)
-    const dataTable = await getOrders(orderId);
-    console.log(dataTable);
+    const id = urlParts[urlParts.length - 1]; // Берем последний элемент массива (ID)
+    setId(id);
+    const dataTable = await getOrders(id);
     if (dataTable.length) {
       setData(dataTable);
+
     } else {
       setData([]);
     }
@@ -63,7 +64,7 @@ const Orders: React.FC = () => {
       <>
         <Header />
         <h2 className={styles.systems_title}>Orders</h2>
-        <OrderData openModal={open} data={data} />
+        <OrderData data={data} />
       </>
   );
 };

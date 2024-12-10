@@ -1,24 +1,43 @@
-.add_btn
+// Общий стиль для контейнера
+.container
+  padding: 20px
+  border: 2px solid #ccc
+  border-radius: 8px
+
+// Стиль для label
+.label
+  display: block
+  font-weight: bold
+  margin-bottom: 5px
+  margin-left: 2%
+
+// Стиль для input
+.input
+  width: 50%
+  padding: 10px
+  border: 1px solid #ccc
+  border-radius: 4px
+  box-sizing: border-box
+  margin-left: 2%
+
+.input_id
+  width: 5%
+  padding: 10px
+  border: 1px solid #ccc
+  border-radius: 4px
+  box-sizing: border-box
+  margin-left: 2%
+  text-align: center
+
+// Контейнер для двух полей
+.fieldContainer_id
+  display: flex // Используем flexbox для горизонтального расположения
+  gap: 20px // Расстояние между полями (можно настроить)
+  align-items: center // Выравниваем элементы по вертикали
+
+// Общий стиль для каждого поля
+.field
   display: flex
-  justify-content: flex-end
-  width: 90% !important
-  &>button
-    background-color: darkcyan
-    &:hover
-      background-color: slategray
-.table
-  position: absolute
-  left: 50%
-  transform: translateX(-50%)
-  margin-top: 20px
-  width: 80% !important
-  border-radius: 30px !important
-  box-shadow: 0px 0px 20px #1976d2 !important
-  border-radius: 20px
-  max-height: 100%
-  min-height: 400px
-  &_group
-    display: flex
-  &_cell
-    font-weight: 800 !important
-    font-size: 21px
+  flex-direction: column // Располагаем label и input вертикально
+  flex: auto // Поля занимают равное пространство
+

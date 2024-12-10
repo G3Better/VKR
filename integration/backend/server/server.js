@@ -50,7 +50,7 @@ server.post('/api/signUp/:login', (req, res) => {
     if(!req.body) return res.sendStatus(400);
     const { fio, email, post, contacts, login, password } = req.body;
 
-    pool.query(`INSERT INTO users (id_users, FIO, email, post, contacts, role, login, password) VALUES ('NULL','${fio}','${email}','${post}','${contacts}','1','${login}','${password}')`, (err, data) => {
+    pool.query(`INSERT INTO users (id_user, FIO, email, post, contacts, role, login, password) VALUES ('NULL','${fio}','${email}','${post}','${contacts}','1','${login}','${password}')`, (err, data) => {
         if (err) return console.error(err);
         return res.json("Успещно зарегистрирован");
     })
@@ -184,7 +184,7 @@ server.post("/api/contours/add", function (req, res) {
 
 // Получение всех ответсвенных
 server.get("/api/responsible", function(req, res){
-    pool.query("SELECT id_users as id, FIO as fio FROM users", function(err, data) {
+    pool.query("SELECT id_user as id, FIO as fio FROM users", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -196,7 +196,7 @@ server.get("/api/responsible", function(req, res){
 
 // Получение всех Систем-Источников
 server.get("/api/systems", function(req, res){
-    pool.query("SELECT `id_system` as id, `name` as name, FIO as responsible FROM `systems`, `users` WHERE responsible=users.id_users;", function(err, data) {
+    pool.query("SELECT `id_system` as id, `name` as name, FIO as responsible FROM `systems`, `users` WHERE responsible=users.id_user;", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -406,7 +406,7 @@ server.post("/api/status/add", function (req, res) {
 
 // Получение всех Endpoints
 server.get("/api/endpoints", function(req, res){
-    pool.query("SELECT id_endpoint as id, endpoints.name as name, ip as ip, port as port, networks.name as network, contours.name as contour, systems.name as system, description as 'desc' FROM endpoints, contours, systems, networks WHERE network=networks.id_network and contour=contours.id_contour and it_system=systems.id_system", function(err, data) {
+    pool.query("SELECT id_endpoint as id, endpoints.name as name, ip as ip, port as port, networks.name as network, contours.name as contour, systems.name as system, description as 'desc' FROM endpoints, contours, systems, networks WHERE network=networks.id_network and contour=contours.id_contour and system=systems.id_system", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -430,7 +430,7 @@ server.delete("/api/endpoints/delete/:id", function (req, res) {
 server.put("/api/endpoints/edit/:id", function (req, res) {
     if (!req.body) return res.sendStatus(400);
     const { id, name, ip, port, network, contour, system, desc } = req.body;
-    pool.query(`UPDATE endpoints SET name='${name}', ip='${ip}', port='${port}', network='${network}', contour='${contour}', it_system='${system}', description='${desc}' WHERE id_endpoint='${id}'`, function(err, data) {
+    pool.query(`UPDATE endpoints SET name='${name}', ip='${ip}', port='${port}', network='${network}', contour='${contour}', system='${system}', description='${desc}' WHERE id_endpoint='${id}'`, function(err, data) {
         if (err) return console.error(err);
         res.json('Endpoint updated');
     });
@@ -440,7 +440,7 @@ server.put("/api/endpoints/edit/:id", function (req, res) {
 server.post("/api/endpoints/add", function (req, res) {
     if (!req.body) return res.sendStatus(400);
     const { id, name, ip, port, network, contour, system, desc } = req.body;
-    pool.query(`INSERT INTO endpoints(id_endpoint, name, ip, port, network, contour, it_system, description) VALUES (NULL,'${name}','${ip}','${port}','${network}','${contour}','${system}','${desc}')`, function(err, data) {
+    pool.query(`INSERT INTO endpoints(id_endpoint, name, ip, port, network, contour, system, description) VALUES (NULL,'${name}','${ip}','${port}','${network}','${contour}','${system}','${desc}')`, function(err, data) {
         if (err) return console.error(err);
         res.json('Endpoints added');
     });
@@ -451,7 +451,7 @@ server.post("/api/endpoints/add", function (req, res) {
 
 // Получение всех пользователей
 server.get("/api/users", function(req, res){
-    pool.query("SELECT FIO as fio, roles.name as role, users.id_users as id, users.email as email, users.post as post, users.contacts as contacts FROM users INNER JOIN roles ON role=roles.id_role", function(err, data) {
+    pool.query("SELECT FIO as fio, roles.name as role, users.id_user as id, users.email as email, users.post as post, users.contacts as contacts FROM users INNER JOIN roles ON role=roles.id_role", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -477,7 +477,7 @@ server.get("/api/roles", function(req, res){
 server.delete("/api/users/delete/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const { id } = req.body;
-    pool.query(`Delete From users where id_users = '${id}'`, function(err, data) {
+    pool.query(`Delete From users where id_user = '${id}'`, function(err, data) {
         if (err) return console.error(err);
         res.json('delete user');
     });
@@ -487,7 +487,7 @@ server.delete("/api/users/delete/:id", function (req, res) {
 server.post('/api/users/add', (req, res) => {
     if(!req.body) return res.sendStatus(400);
     const { fio, email, post, contacts, login, password } = req.body;
-    pool.query(`INSERT INTO users (id_users, FIO, email, post, contacts, role, login, password) VALUES ('NULL','${fio}','${email}','${post}','${contacts}','1','${login}','${password}')`, (err, data) => {
+    pool.query(`INSERT INTO users (id_user, FIO, email, post, contacts, role, login, password) VALUES ('NULL','${fio}','${email}','${post}','${contacts}','1','${login}','${password}')`, (err, data) => {
         if (err) return console.error(err);
         return res.json("пользователь добавлен");
     })
@@ -497,7 +497,7 @@ server.post('/api/users/add', (req, res) => {
 server.put("/api/users/edit/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const { id, fio, email, post, idRole, contacts } = req.body;
-    pool.query(`UPDATE users SET FIO ='${fio}', email ='${email}', post ='${post}', role ='${idRole}', contacts = '${contacts}' WHERE users.id_users = '${id}'`, function(err, data) {
+    pool.query(`UPDATE users SET FIO ='${fio}', email ='${email}', post ='${post}', role ='${idRole}', contacts = '${contacts}' WHERE users.id_user = '${id}'`, function(err, data) {
         if (err) return console.error(err);
         res.json('user updated');
     });
@@ -505,7 +505,7 @@ server.put("/api/users/edit/:id", function (req, res) {
 
 // Получение заявок для общей таблицы
 server.get("/api/orders_table", function(req, res){
-    pool.query("SELECT orders.id_order AS id_order, orders.title AS title, source_systems.name AS source, dest_systems.name AS dest, status.name AS status FROM orders JOIN systems AS source_systems ON orders.source_system = source_systems.id_system JOIN systems AS dest_systems ON orders.dest_system = dest_systems.id_system JOIN status ON orders.status = status.id_status", function(err, data) {
+    pool.query("SELECT orders.id_order AS id_order, orders.title AS title, source_systems.name AS source, dest_systems.name AS dest, status.name AS status FROM orders JOIN systems AS source_systems ON orders.source_system = source_systems.id_system JOIN systems AS dest_systems ON orders.dest_system = dest_systems.id_system JOIN status ON orders.status = status.id_status GROUP BY id_order", function(err, data) {
         if (err) return console.error(err);
         if(!data.length) return res.sendStatus(400);
         const newData = data.map((elem) => {
@@ -516,14 +516,13 @@ server.get("/api/orders_table", function(req, res){
 });
 
 // Получение заявок для текущей таблицы
-server.get("/api/orders/:id", function (req, res) {
+server.post("/api/order/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const { id } = req.body;
-    console.log(id);
-    pool.query("SELECT o.id_order AS id, o.title AS title, src.name AS source, dest.name AS dest, test_ep.name AS test, cert_ep.name AS cert, prod_ep.name AS prod, rr.rate AS rate, s.name AS status, a.name AS authorization, u.FIO AS customer, o.isAcceptedByIS AS isAcceptedByIS, o.isAcceptedByCorpArch AS isAcceptedByCorpArch, o.isAcceptedByArc AS isAcceptedByArc, o.description AS 'desc', o.swagger AS swagger FROM orders o JOIN systems src ON o.source_system = src.id_system JOIN systems dest ON o.dest_system = dest.id_system JOIN endpoints test_ep ON o.test_endpoint = test_ep.id_endpoint JOIN endpoints cert_ep ON o.cert_endpoint = cert_ep.id_endpoint JOIN endpoints prod_ep ON o.prod_endpoint = prod_ep.id_endpoint JOIN request_rates rr ON o.request_rate = rr.id_request_rate JOIN status s ON o.status = s.id_status JOIN authorizations a ON o.authorization = a.id_authorization JOIN users u ON o.customer = u.id_users WHERE o.id_order='"+id+"'", function(err, data) {
+    pool.query("SELECT o.id_order AS id, o.title AS title, src.name AS source, dest.name AS dest, test_ep.name AS test, cert_ep.name AS cert, prod_ep.name AS prod, rr.rate AS rate, s.name AS status, a.name AS authorization, u.FIO AS customer, o.isAcceptedByIS AS isAcceptedByIS, o.isAcceptedByCorpArch AS isAcceptedByCorpArch, o.isAcceptedByArc AS isAcceptedByArc, o.description AS 'desc', o.swagger AS swagger FROM orders o JOIN systems src ON o.source_system = src.id_system JOIN systems dest ON o.dest_system = dest.id_system LEFT JOIN endpoints test_ep ON o.test_endpoint = test_ep.id_endpoint LEFT JOIN endpoints cert_ep ON o.cert_endpoint = cert_ep.id_endpoint JOIN endpoints prod_ep ON o.prod_endpoint = prod_ep.id_endpoint JOIN request_rates rr ON o.request_rate = rr.id_request_rate JOIN status s ON o.status = s.id_status JOIN authorizations a ON o.authorization = a.id_authorization JOIN users u ON o.customer = u.id_user WHERE o.id_order='"+id+"'", function(err, data) {
         if (err) return console.error(err);
         const newData = data.map((elem) => {
-            return { id: elem.id, title: elem.title, source: elem.source, dest: elem.dest, test: elem.test, cert: elem.cert, prod: elem.prod, rate: elem.rate, statu: elem.status, auth: elem.authorization, customer: elem.customer, isAcceptedByIS: elem.isAcceptedByIS, isAcceptedByCorpArch: elem.isAcceptedByCorpArch, isAcceptedByArc: elem.isAcceptedByArc, desc: elem.desc, swagger: elem.swagger}
+            return { id: elem.id, title: elem.title, source: elem.source, dest: elem.dest, test: elem.test, cert: elem.cert, prod: elem.prod, rate: elem.rate, status: elem.status, auth: elem.authorization, customer: elem.customer, isAcceptedByIS: elem.isAcceptedByIS, isAcceptedByCorpArch: elem.isAcceptedByCorpArch, isAcceptedByArc: elem.isAcceptedByArc, desc: elem.desc, swagger: elem.swagger}
         })
         res.json(newData);
     });

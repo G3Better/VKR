@@ -1,64 +1,68 @@
 import * as React from "react";
+import {inspect} from "util";
+import styles from "./OrderData.module.sass"
 
 // Интерфейс для пропсов компонента
 interface IOrder {
-  openModal: boolean; // Указывает, отображать ли модальное окно
   data: any; // Предполагаем, что data — это объект с ключами (названиями полей) и значениями
   children?: React.ReactNode; // Дополнительно, если нужно передать дочерние элементы
 }
 
-const OrderData: React.FC<IOrder> = ({ openModal, data }) => {
-  // Локальное состояние для управления значениями формы
-  const [formData, setFormData] = React.useState(data);
-
-  // Если модальное окно закрыто, ничего не отображаем
-  if (!openModal) return null;
-
-  return (
-      <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-        <form>
-          {/* Генерация полей формы на основе ключей объекта data */}
-          {Object.keys(data)
-              .slice(0, 8) // Берём только первые 8 полей
-              .map((key, index) => (
-                  <div key={index} style={{ marginBottom: "15px" }}>
-                    <label
-                        htmlFor={key}
-                        style={{ display: "block", fontWeight: "bold", marginBottom: "5px" }}
-                    >
-                      {key.charAt(0).toUpperCase() + key.slice(1)}:
+const OrderData: React.FC<IOrder> = ({ data }) => {
+    return (
+        <div className={styles.container}>
+            <form>
+                <div className={styles.fieldContainer_id}>
+                        <label className={styles.label}>
+                            Номер заявки:
+                        </label>
+                        <input
+                            type="text"
+                            id="id"
+                            name="id"
+                            placeholder={data[0]?.id}
+                            className={styles.input_id}
+                        />
+                        <label htmlFor="field2" className={styles.label}>
+                            Заголовок:
+                        </label>
+                        <input
+                            type="text"
+                            id="field2"
+                            name="field2"
+                            value={data[0]?.title}
+                            className={styles.input}
+                        />
+                </div>
+                {/* Поле 3 */}
+                <div className={styles.fieldContainer}>
+                    <label htmlFor="field3" className={styles.label}>
+                        Field3:
                     </label>
                     <input
                         type="text"
-                        id={key}
-                        name={key}
-                        value={formData[key] || ""} // Значение из состояния
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          boxSizing: "border-box",
-                        }}
+                        id="field3"
+                        name="field3"
+                        value={data[0]?.source}
+                        className={styles.input}
                     />
-                  </div>
-              ))}
-          <button
-              type="submit"
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#007BFF",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-  );
-};
+                </div>
+                {/* Поле 4 */}
+                <div className={styles.fieldContainer}>
+                    <label htmlFor="field4" className={styles.label}>
+                        Field4:
+                    </label>
+                    <input
+                        type="text"
+                        id="field4"
+                        name="field4"
+                        placeholder={data[0]?.dest}
+                        className={styles.input}
+                    />
+                </div>
+            </form>
+        </div>
+    );
+}
 
 export default React.memo(OrderData);
