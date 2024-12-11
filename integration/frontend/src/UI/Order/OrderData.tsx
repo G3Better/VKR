@@ -1,5 +1,6 @@
 import * as React from "react";
 import {inspect} from "util";
+import classNames from 'classnames';
 import styles from "./OrderData.module.sass"
 import {useEffect, useState} from "react";
 
@@ -16,6 +17,11 @@ interface IOrder {
 }
 
 const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoints_data, auth_data, rr_data, customer_data }) => {
+    const [idFieldText, setIdField] = React.useState(data[0]?.id);
+    const [titleFieldText, setTitleField] = React.useState(data[0]?.title);
+    const [descFieldText, setDescField] = React.useState(data[0]?.desc);
+    const [swaggerFieldText, setSwaggerField] = React.useState(data[0]?.swagger);
+    const [hidden, setIsHidden] = React.useState<boolean>(true);
     const [isAcceptedByIS, setIsAcceptedByIS] = React.useState<boolean>(data[0]?.isAcceptedByIS);
     const [isAcceptedByCorpArch, setIsAcceptedByCorpArch] = React.useState<boolean>(data[0]?.isAcceptedByCorpArch);
     const [isAcceptedByArc, setIsAcceptedByArc] = React.useState<boolean>(data[0]?.isAcceptedByArc);
@@ -50,6 +56,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
             setIsAcceptedByIS(data[0]?.isAcceptedByIS);
             setIsAcceptedByCorpArch(data[0]?.isAcceptedByCorpArch);
             setIsAcceptedByArc(data[0]?.isAcceptedByArc);
+            setIdField(data[0]?.id);
+            setTitleField(data[0]?.title);
+            setDescField(data[0]?.desc);
+            setSwaggerField(data[0]?.swagger);
         }
     }, [data]);
 
@@ -101,6 +111,58 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
         setIsAcceptedByArc(event.target.checked);
     };
 
+    const handleHiddenButtonsChange = (isVisible: boolean) => {
+        setIsHidden(isVisible);
+    };
+
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTitleField(event.target.value);
+    };
+
+    const handleDescChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDescField(event.target.value);
+    };
+
+    const handleSwaggerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setSwaggerField(event.target.value);
+    };
+
+    const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIdField(event.target.value);
+    };
+
+    const handleButtonSave = async () => {
+        const formData: Record<string, string | boolean> = {}; // Учтём, что для чекбоксов может быть boolean
+        const inputs = document.querySelectorAll('input');
+        const selects = document.querySelectorAll('select');
+        const textareas = document.querySelectorAll('textarea'); // Выбираем все textarea
+
+        // Обрабатываем input
+        inputs.forEach((input) => {
+            if (input.type === 'checkbox') {
+                // Если это чекбокс, сохраняем его состояние (true/false)
+                formData[input.name] = input.checked;
+            } else {
+                // Для остальных типов input сохраняем значение
+                formData[input.name] = input.value;
+            }
+        });
+
+        // Обрабатываем select
+        selects.forEach((select) => {
+            formData[select.name] = select.value;
+        });
+
+        // Обрабатываем textarea
+        textareas.forEach((textarea) => {
+            formData[textarea.name] = textarea.value;
+        });
+
+        console.log('Собранные данные:', formData);
+    };
+
+
+
     return (
         <div className={styles.container}>
             <form>
@@ -112,8 +174,11 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             type="text"
                             id="idField"
                             name="idField"
-                            placeholder={data[0]?.id}
-                            className={styles.input_id}
+                            placeholder={idFieldText}
+                            value={idFieldText}
+                            onChange={handleIdChange}
+                            disabled={hidden}
+                            className={classNames(styles.input_id, { [styles.input_disabled]: hidden })}
                         />
                         <label htmlFor="titleField" className={styles.label}>
                             Заголовок:
@@ -122,8 +187,11 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             type="text"
                             id="titleField"
                             name="titleField"
-                            placeholder={data[0]?.title}
-                            className={styles.input_title}
+                            placeholder={titleFieldText}
+                            value={titleFieldText}
+                            onChange={handleTitleChange}
+                            disabled={hidden}
+                            className={classNames(styles.input_title, { [styles.input_disabled]: hidden })}
                         />
                 </div>
                 {/* Поле 3-4 */}
@@ -134,9 +202,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="sourceSelect"
                         id="sourceSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedSource} // Связываем со значением состояния
                         onChange={handleSourceChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {systems_data.map((systems: { id: number; name: string }) => (
                             <option key={systems.id} value={systems.name}>
@@ -150,9 +219,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="destSelect"
                         id="destSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedDest} // Связываем со значением состояния
                         onChange={handleDestChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {systems_data.map((systems: { id: number; name: string }) => (
                             <option key={systems.id} value={systems.name}>
@@ -169,9 +239,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="statusSelect"
                         id="statusSelect"
-                        className={styles.select_status}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedStatus} // Связываем со значением состояния
                         onChange={handleStatusChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {status_data.map((status: { id: number; name: string }) => (
                             <option key={status.id} value={status.name}>
@@ -188,9 +259,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="testSelect"
                         id="testSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedTestEp} // Связываем со значением состояния
                         onChange={handleTestEpChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         <option key='0' value='Null'>Null</option>
                         {endpoints_data.map((endpoint: { id: number; name: string }) => (
@@ -205,9 +277,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="certSelect"
                         id="certSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedCertEp} // Связываем со значением состояния
                         onChange={handleCertEpChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         <option key='0' value='Null'>Null</option>
                         {endpoints_data.map((endpoint: { id: number; name: string }) => (
@@ -222,9 +295,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="prodSelect"
                         id="prodSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedProdEp} // Связываем со значением состояния
                         onChange={handleProdEpChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {endpoints_data.map((endpoint: { id: number; name: string }) => (
                             <option key={endpoint.id} value={endpoint.name}>
@@ -241,9 +315,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="authSelect"
                         id="authSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedAuth} // Связываем со значением состояния
                         onChange={handleAuthChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {auth_data.map((auth: { id: number; name: string }) => (
                             <option key={auth.id} value={auth.name}>
@@ -257,9 +332,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="rrSelect"
                         id="rrSelect"
-                        className={styles.select}
+                        className={classNames(styles.select, { [styles.select_disabled]: hidden })}
                         value={selectedRr} // Связываем со значением состояния
                         onChange={handleRrChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {rr_data.map((rr: { id: number; name: string }) => (
                             <option key={rr.id} value={rr.name}>
@@ -276,9 +352,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <select
                         name="customerSelect"
                         id="customerSelect"
-                        className={styles.select_status}
+                        className={classNames(styles.select_status, { [styles.select_disabled]: hidden })}
                         value={selectedCustomer} // Связываем со значением состояния
                         onChange={handleCustomerChange} // Обновляем состояние при изменении
+                        disabled={hidden}
                     >
                         {customer_data.map((customer: { id: number; fio: string }) => (
                             <option key={customer.id} value={customer.fio}>
@@ -298,7 +375,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         name="isAcceptedByIS"
                         checked={isAcceptedByIS}
                         onChange={handleIsAcceptedByISChange}
-                        className={styles.input}
+                        className={classNames(styles.input, { [styles.input_disabled]: hidden })}
+                        disabled={hidden}
                     />
                     <label htmlFor="idField" className={styles.label}>
                         Согласовано корпоративным архитектором:
@@ -309,7 +387,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         name="isAcceptedByCorpArch"
                         checked={isAcceptedByCorpArch}
                         onChange={handleIsAcceptedByCorpArchChange}
-                        className={styles.input}
+                        className={classNames(styles.input, { [styles.input_disabled]: hidden })}
+                        disabled={hidden}
                     />
                     <label htmlFor="idField" className={styles.label}>
                         Согласовано архитектором интеграции:
@@ -320,7 +399,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         name="isAcceptedByArc"
                         checked={isAcceptedByArc}
                         onChange={handleIsAcceptedByArcChange}
-                        className={styles.input}
+                        className={classNames(styles.input, { [styles.input_disabled]: hidden })}
+                        disabled={hidden}
                     />
                 </div>
                 {/* Поле 15 */}
@@ -328,12 +408,13 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <label htmlFor="descField" className={styles.label}>
                         Описание:
                     </label>
-                    <input
-                        type="text"
+                    <textarea
                         id="descField"
                         name="descField"
-                        placeholder={data[0]?.desc}
-                        className={styles.input}
+                        value={descFieldText}
+                        onChange={handleDescChange}
+                        disabled={hidden}
+                        className={classNames(styles.textarea, { [styles.textarea_disabled]: hidden })}
                     />
                 </div>
                 {/* Поле 16 */}
@@ -341,16 +422,47 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     <label htmlFor="swaggerField" className={styles.label}>
                         Сваггер или Wsdl:
                     </label>
-                    <input
-                        type="text"
+                    <textarea
                         id="swaggerField"
                         name="swaggerField"
-                        placeholder={data[0]?.swagger}
-                        className={styles.input}
+                        value={swaggerFieldText}
+                        onChange={handleSwaggerChange}
+                        disabled={hidden}
+                        className={classNames(styles.textarea, { [styles.textarea_disabled]: hidden })}
                     />
                 </div>
-                <div>
-                    <button name="Save">Save</button>
+                {/* Блок с кнопками */}
+                <div className={styles.buttonContainer}>
+                    <button className={classNames(styles.button, styles.saveButton, { [styles.disabledButton]: hidden })}
+                            disabled={hidden}
+                            name="Save"
+                            onClick={(e) => {
+                                handleButtonSave();
+                                e.preventDefault();
+                                //window.location.reload();
+                            }} // Предотвращаем обновление страницы
+                    >
+                        Save
+                    </button>
+                    <button className={classNames(styles.button, styles.noButton, { [styles.disabledButton]: hidden })}
+                            disabled={hidden}
+                            name="No"
+                            onClick={(e) => {
+                                window.location.reload();
+                            }}
+                    >
+                        No
+                    </button>
+                    <button
+                        className={styles.button && styles.editButton}
+                        onClick={(e) => {
+                            e.preventDefault(); // Предотвращаем обновление страницы
+                            handleHiddenButtonsChange(false); // Вызываем вашу функцию
+                        }} // Оборачиваем вызов функции
+                        name="Edit"
+                    >
+                        Edit
+                    </button>
                 </div>
             </form>
         </div>
