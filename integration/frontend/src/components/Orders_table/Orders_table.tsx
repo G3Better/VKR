@@ -9,6 +9,7 @@ import { dateConverter } from "../../utills/dateUtills";
 import Header from "../Header/Header";
 import styles from "./Orders_table.module.sass";
 import {checkIsArrayDataFromModal, uniqArrayForModal} from "../../utills/dataUtil";
+import {getResponsible, getSystems} from "../../controllers/SystemsController";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "Номер заявки", type: "number" },
@@ -23,6 +24,7 @@ const Orders_table: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState<string | undefined>(undefined);
   const [editData, setEditData] = React.useState<any>(null);
+
   const fetchData = React.useCallback(async () => {
     const dataTable = await getOrders();
     if (dataTable.length) {
@@ -42,6 +44,10 @@ const Orders_table: React.FC = () => {
   }, []);
 
   const handleAdd = React.useCallback((data: any) => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleCreate = React.useCallback((data: any) => {
     fetchData();
   }, [fetchData]);
 
@@ -66,6 +72,7 @@ const Orders_table: React.FC = () => {
         <h2 className={styles.systems_title}>Orders</h2>
         <TableData
             isShowAddBtn={false}
+            isShowCreateMode={true}
             isShowEditBtns={false}
             isShowGetModel={true}
             row_id={id}

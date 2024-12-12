@@ -3,6 +3,8 @@ import {inspect} from "util";
 import classNames from 'classnames';
 import styles from "./OrderData.module.sass"
 import {useEffect, useState} from "react";
+import {addOrders, editOrders} from "../../controllers/OrdersController";
+import {editNetworks} from "../../controllers/NetworksController";
 
 // Интерфейс для пропсов компонента
 interface IOrder {
@@ -17,6 +19,7 @@ interface IOrder {
 }
 
 const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoints_data, auth_data, rr_data, customer_data }) => {
+    const [selectedAuth, setSelectedAuth] = React.useState(data[0]?.auth);
     const [idFieldText, setIdField] = React.useState(data[0]?.id);
     const [titleFieldText, setTitleField] = React.useState(data[0]?.title);
     const [descFieldText, setDescField] = React.useState(data[0]?.desc);
@@ -32,10 +35,10 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
     const [selectedTestEp, setSelectedTestEp] = React.useState(data[0]?.test);
     const [selectedCertEp, setSelectedCertEp] = React.useState(data[0]?.cert);
     const [selectedProdEp, setSelectedProdEp] = React.useState(data[0]?.prod);
-    const [selectedAuth, setSelectedAuth] = React.useState(data[0]?.authorization);
     const [selectedRr, setSelectedRr] = React.useState(data[0]?.rate);
     useEffect(() => {
         if (data) {
+            setSelectedAuth(data[0]?.auth);
             setSelectedCustomer(data[0]?.customer);
             setSelectedStatus(data[0]?.status);
             setSelectedSource(data[0]?.source);
@@ -51,7 +54,6 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                 setSelectedCertEp(data[0]?.cert);
             }
             setSelectedProdEp(data[0]?.prod);
-            setSelectedAuth(data[0]?.authorization);
             setSelectedRr(data[0]?.rate);
             setIsAcceptedByIS(data[0]?.isAcceptedByIS);
             setIsAcceptedByCorpArch(data[0]?.isAcceptedByCorpArch);
@@ -132,7 +134,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
     };
 
     const handleButtonSave = async () => {
-        const formData: Record<string, string | boolean> = {}; // Учтём, что для чекбоксов может быть boolean
+        const formData: Record<string, string | boolean | number> = {}; // Учтём, что для чекбоксов может быть boolean
         const inputs = document.querySelectorAll('input');
         const selects = document.querySelectorAll('select');
         const textareas = document.querySelectorAll('textarea'); // Выбираем все textarea
@@ -150,15 +152,58 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
 
         // Обрабатываем select
         selects.forEach((select) => {
-            formData[select.name] = select.value;
+            const selectedOption = select.options[select.selectedIndex]; // Получаем выбранный <option>
+            formData[select.name] = selectedOption.getAttribute('data-id') || ''; // Извлекаем значение data-id
+            if ('Null' === selectedOption.getAttribute('data-id')){
+                formData[select.name]='Null';
+            } else {
+                formData[select.name] = selectedOption.getAttribute('data-id') || ''; // Извлекаем значение data-id
+            }
         });
 
         // Обрабатываем textarea
         textareas.forEach((textarea) => {
             formData[textarea.name] = textarea.value;
         });
-
         console.log('Собранные данные:', formData);
+        if (idFieldText) {
+        await editOrders(
+            Number(formData.idField),
+            formData.titleField?.toString(),
+            Number(formData.sourceSelect),
+            Number(formData.destSelect),
+            Number(formData.rrSelect),
+            Number(formData.statusSelect),
+            Number(formData.authSelect),
+            Number(formData.customerSelect),
+            Number(formData.testSelect),
+            Number(formData.certSelect),
+            Number(formData.prodSelect),
+            Boolean(formData.isAcceptedByIS),
+            Boolean(formData.isAcceptedByCorpArch),
+            Boolean(formData.isAcceptedByArc),
+            formData.descField?.toString(),
+            formData.swaggerField?.toString(),
+        );
+        } else {
+            await addOrders(
+                formData.titleField?.toString(),
+                Number(formData.sourceSelect),
+                Number(formData.destSelect),
+                Number(formData.rrSelect),
+                Number(formData.statusSelect),
+                Number(formData.authSelect),
+                Number(formData.customerSelect),
+                Number(formData.testSelect),
+                Number(formData.certSelect),
+                Number(formData.prodSelect),
+                Boolean(formData.isAcceptedByIS),
+                Boolean(formData.isAcceptedByCorpArch),
+                Boolean(formData.isAcceptedByArc),
+                formData.descField?.toString(),
+                formData.swaggerField?.toString(),
+            );
+        }
     };
 
 
@@ -167,10 +212,11 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
         <div className={styles.container}>
             <form>
                 <div className={styles.fieldContainer_id}>
-                        <label htmlFor="idField" className={styles.label}>
+                    {idFieldText && (
+                        <>
+                            <label htmlFor="idField" className={styles.label}>
                             Номер заявки:
-                        </label>
-                        <input
+                        </label><input
                             type="text"
                             id="idField"
                             name="idField"
@@ -178,8 +224,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             value={idFieldText}
                             onChange={handleIdChange}
                             disabled={hidden}
-                            className={classNames(styles.input_id, { [styles.input_disabled]: hidden })}
-                        />
+                            className={classNames(styles.input_id, {[styles.input_disabled]: hidden})}/></>
+                    )}
                         <label htmlFor="titleField" className={styles.label}>
                             Заголовок:
                         </label>
@@ -208,7 +254,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         disabled={hidden}
                     >
                         {systems_data.map((systems: { id: number; name: string }) => (
-                            <option key={systems.id} value={systems.name}>
+                            <option key={systems.id} value={systems.name} data-id={systems.id}>
                                 {systems.name}
                             </option>
                         ))}
@@ -225,7 +271,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         disabled={hidden}
                     >
                         {systems_data.map((systems: { id: number; name: string }) => (
-                            <option key={systems.id} value={systems.name}>
+                            <option key={systems.id} value={systems.name} data-id={systems.id}>
                                 {systems.name}
                             </option>
                         ))}
@@ -245,7 +291,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         disabled={hidden}
                     >
                         {status_data.map((status: { id: number; name: string }) => (
-                            <option key={status.id} value={status.name}>
+                            <option key={status.id} value={status.name} data-id={status.id}>
                                 {status.name}
                             </option>
                         ))}
@@ -264,9 +310,9 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         onChange={handleTestEpChange} // Обновляем состояние при изменении
                         disabled={hidden}
                     >
-                        <option key='0' value='Null'>Null</option>
+                        <option key='0' value='Null' data-id='Null'>Null</option>
                         {endpoints_data.map((endpoint: { id: number; name: string }) => (
-                            <option key={endpoint.id} value={endpoint.name}>
+                            <option key={endpoint.id} value={endpoint.name} data-id={endpoint.id}>
                                 {endpoint.name}
                             </option>
                         ))}
@@ -282,9 +328,9 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         onChange={handleCertEpChange} // Обновляем состояние при изменении
                         disabled={hidden}
                     >
-                        <option key='0' value='Null'>Null</option>
+                        <option key='0' value='Null' data-id='Null'>Null</option>
                         {endpoints_data.map((endpoint: { id: number; name: string }) => (
-                            <option key={endpoint.id} value={endpoint.name}>
+                            <option key={endpoint.id} value={endpoint.name} data-id={endpoint.id}>
                                 {endpoint.name}
                             </option>
                         ))}
@@ -301,7 +347,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         disabled={hidden}
                     >
                         {endpoints_data.map((endpoint: { id: number; name: string }) => (
-                            <option key={endpoint.id} value={endpoint.name}>
+                            <option key={endpoint.id} value={endpoint.name} data-id={endpoint.id}>
                                 {endpoint.name}
                             </option>
                         ))}
@@ -320,9 +366,9 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         onChange={handleAuthChange} // Обновляем состояние при изменении
                         disabled={hidden}
                     >
-                        {auth_data.map((auth: { id: number; name: string }) => (
-                            <option key={auth.id} value={auth.name}>
-                                {auth.name}
+                        {auth_data.map((Auth: { id: number; name: string }) => (
+                            <option key={Auth.id} value={Auth.name} data-id={Auth.id}>
+                                {Auth.name}
                             </option>
                         ))}
                     </select>
@@ -338,7 +384,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         disabled={hidden}
                     >
                         {rr_data.map((rr: { id: number; name: string }) => (
-                            <option key={rr.id} value={rr.name}>
+                            <option key={rr.id} value={rr.name} data-id={rr.id}>
                                 {rr.name}
                             </option>
                         ))}
@@ -358,7 +404,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         disabled={hidden}
                     >
                         {customer_data.map((customer: { id: number; fio: string }) => (
-                            <option key={customer.id} value={customer.fio}>
+                            <option key={customer.id} value={customer.fio} data-id={customer.id}>
                                 {customer.fio}
                             </option>
                         ))}
@@ -439,7 +485,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             onClick={(e) => {
                                 handleButtonSave();
                                 e.preventDefault();
-                                //window.location.reload();
+                              //  window.location.reload();
                             }} // Предотвращаем обновление страницы
                     >
                         Save

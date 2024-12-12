@@ -19,6 +19,7 @@ interface ITable {
   isShowAddBtn?: boolean;
   isShowEditBtns?: boolean;
   isShowGetModel?: boolean;
+  isShowCreateMode?: boolean;
   columns: GridColDef[];
   children: any;
   handleAdd?: (data: any) => void;
@@ -29,11 +30,13 @@ interface ITable {
   data: any;
   fetchData?: any;
 }
+
 const TableData: React.FC<ITable> = ({
   row_id,
   isShowAddBtn=true,
   isShowEditBtns=true,
   isShowGetModel=false,
+  isShowCreateMode=false,
   columns,
   children,
   handleAdd,
@@ -48,7 +51,6 @@ const TableData: React.FC<ITable> = ({
   const handleShowAddModal = React.useCallback(() => {
     setShowAddModal((prev) => !prev);
   }, []);
-
   return (
     <div>
       {isShowAddBtn && (
@@ -62,6 +64,21 @@ const TableData: React.FC<ITable> = ({
               Add
             </Button>
           </div>)}
+      {isShowCreateMode && (
+          <div className={styles.add_btn}>
+          <Button
+              variant="contained"
+              size="medium"
+              sx={{ width: "40ch" }}
+              component="a" // Используем компонент <a>
+              href={"http://localhost:3000/orders/add"} // Динамически сформированный URL
+              rel="noopener noreferrer" // Безопасность для внешних ссылок
+          >
+            Создать
+          </Button>
+          </div>
+      )}
+
       <TableContainer component={Paper} className={styles.table}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

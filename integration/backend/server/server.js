@@ -528,6 +528,33 @@ server.post("/api/order/:id", function (req, res) {
     });
 });
 
+// Редактирование заказов
+server.put("/api/orders/edit/:id", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    const { id, title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger } = req.body;
+    console.log(req.body);
+    pool.query("UPDATE `orders` SET source_system="+source_system+", dest_system="+dest_system+", customer="+customer+", authorization='"+authorization+"', request_rate='"+request_rate+"', status='"+status+"', description='"+description+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
+        if (err) return console.error(err);
+        res.json('orders updated');
+    });
+});
+
+// Добавление заказов
+server.post("/api/o/add", function (req, res) {
+    if(!req.body) return res.sendStatus(400);
+    console.log("something");
+    console.log(req.body);
+    const { title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger } = req.body;
+    pool.query("INSERT INTO orders(id_order, title, source_system, dest_system, request_rate, status, authorization, customer, test_endpoint, cert_endpoint, prod_endpoint, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, description, swagger) VALUES ('Null', '"+title+"','"+source+"','"+dest+"','"+rr+"','"+status+"','"+auth+"','"+customer+"',"+test+","+cert+",'"+prod+"','"+isAcceptedByIS+"','"+isAcceptedByCorpArch+"','"+isAcceptedByArc+"','"+desc+"','"+swagger+"')", function(err, data) {
+        if (err) return console.error(err);
+        res.json('orders updated');
+    });
+});
+
+
+
+
+
 // Удаление заявки
 server.delete("/api/orders/delete/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
@@ -539,11 +566,11 @@ server.delete("/api/orders/delete/:id", function (req, res) {
 });
 
 // Редактирование заказов
-server.put("/api/orders/edit/:id", function (req, res) {
+server.put("/api/order/edit/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
-    const { id, source_system, dest_system, request_rate, status, authorization, customer, description, swagger } = req.body;
+    const { id, title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger } = req.body;
     console.log(req.body);
-    pool.query("UPDATE `orders` SET source_system="+source_system+", dest_system="+dest_system+", customer="+customer+", authorization='"+authorization+"', request_rate='"+request_rate+"', status='"+status+"', description='"+description+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
+    pool.query("UPDATE orders SET title='"+title+"', source_system="+source+", dest_system="+dest+", request_rate="+rr+", status="+status+", authorization="+auth+", customer="+customer+", test_endpoint="+test+", cert_endpoint="+cert+", prod_endpoint="+prod+", isAcceptedByIS="+isAcceptedByIS+", isAcceptedByCorpArch="+isAcceptedByCorpArch+", isAcceptedByArc="+isAcceptedByArc+", description='"+desc+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
         if (err) return console.error(err);
         res.json('orders updated');
     });
