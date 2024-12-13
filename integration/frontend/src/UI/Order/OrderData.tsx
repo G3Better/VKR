@@ -1,10 +1,11 @@
 import * as React from "react";
 import {inspect} from "util";
 import classNames from 'classnames';
-import styles from "./OrderData.module.sass"
+import styles from "./OrderData2.module.sass"
 import {useEffect, useState} from "react";
 import {addOrders, editOrders} from "../../controllers/OrdersController";
 import {editNetworks} from "../../controllers/NetworksController";
+import Button from "@mui/material/Button";
 
 // Интерфейс для пропсов компонента
 interface IOrder {
@@ -241,7 +242,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         />
                 </div>
                 {/* Поле 3-4 */}
-                <div className={styles.fieldContainer_systems}>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="sourceSelect" className={styles.label}>
                         Система-источник:
                     </label>
@@ -259,6 +260,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             </option>
                         ))}
                     </select>
+                </div>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="destSelect" className={styles.label}>
                         Система-получатель:
                     </label>
@@ -298,7 +301,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     </select>
                 </div>
                 {/* Поле 6-8 */}
-                <div className={styles.fieldContainer_endpoints}>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="testSelect" className={styles.label}>
                         TestEp:
                     </label>
@@ -317,6 +320,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             </option>
                         ))}
                     </select>
+                </div>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="certSelect" className={styles.label}>
                         CertEp:
                     </label>
@@ -335,6 +340,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             </option>
                         ))}
                     </select>
+                </div>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="prodSelect" className={styles.label}>
                         ProdEp:
                     </label>
@@ -354,7 +361,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     </select>
                 </div>
                 {/* Поле 9-10 */}
-                <div className={styles.fieldContainer_auth_rr}>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="authSelect" className={styles.label}>
                         Тип авторизации:
                     </label>
@@ -372,6 +379,8 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             </option>
                         ))}
                     </select>
+                </div>
+                <div className={styles.fieldContainer}>
                     <label htmlFor="rrSelect" className={styles.label}>
                         Частота запроса:
                     </label>
@@ -485,7 +494,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                             onClick={(e) => {
                                 handleButtonSave();
                                 e.preventDefault();
-                              //  window.location.reload();
+                                window.location.reload();
                             }} // Предотвращаем обновление страницы
                     >
                         Save
@@ -500,7 +509,7 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                         No
                     </button>
                     <button
-                        className={styles.button && styles.editButton}
+                        className={classNames(styles.button, styles.editButton)}
                         onClick={(e) => {
                             e.preventDefault(); // Предотвращаем обновление страницы
                             handleHiddenButtonsChange(false); // Вызываем вашу функцию
@@ -509,6 +518,17 @@ const OrderData: React.FC<IOrder> = ({ data, status_data, systems_data, endpoint
                     >
                         Edit
                     </button>
+                    <Button
+                        className={classNames(styles.button, styles.backButton)} // Combine styles if needed
+                        variant="contained"
+                        size="medium"
+                        sx={{ width: "12ch" }}
+                        component="a" // Use <a> as the underlying element
+                        href="http://localhost:3000/orders" // Dynamically generated URL
+                        rel="noopener noreferrer" // Security for external links
+                    >
+                        Back
+                    </Button>
                 </div>
             </form>
         </div>

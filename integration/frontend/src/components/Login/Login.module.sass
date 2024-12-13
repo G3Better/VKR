@@ -2,29 +2,58 @@
   position: fixed
   top: 50%
   left: 50%
-  transform: translateX(-50%) translateY(-50%)
+  transform: translate(-50%, -50%)
   display: flex
   flex-direction: column
   justify-content: center
+  align-items: center
   padding: 40px
-  border: 2px solid #1976d2
-  border-radius: 20px
-  background-color: #6697d9
-  box-shadow: 0px 0px 20px #1976d2
+  border-radius: 16px
+  background-color: #ffffff // Светлый фон для современного минимализма
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1) // Плавная тень для глубины
+
   &-title
-    display: flex
-    justify-content: center
+    font-size: 28px
+    font-weight: bold
+    color: #1976d2 // Основной акцентный цвет
+    margin-bottom: 20px
+    text-align: center
+
   &-btn
-    margin-top: 10px
+    margin-top: 20px
     display: flex
-    justify-content: space-around
+    justify-content: space-between
     align-items: center
-    font-weight: 500
+    gap: 20px
+
+    Button
+      background-color: #1976d2
+      color: #fff
+      font-weight: bold
+      padding: 10px 20px
+      border-radius: 8px
+      transition: all 0.3s ease
+
+      &:hover
+        background-color: #145a9e // Более тёмный оттенок при наведении
+
+      &:disabled
+        background-color: #cccccc // Серый цвет для неактивной кнопки
+        color: #666666
+
+    a
+      color: #1976d2
+      text-decoration: none
+      font-size: 14px
+
+      &:hover
+        text-decoration: underline
+
   &-error
     display: flex
     align-items: center
-    justify-content: left
+    justify-content: flex-start
     gap: 10px
-    color: #e00000
-    font-weight: 400
-    margin-top: 10px
+    color: #e00000 // Красный цвет для ошибок
+    font-size: 14px
+    margin-top: 15px

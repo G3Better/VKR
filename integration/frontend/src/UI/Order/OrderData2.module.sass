@@ -1,0 +1,177 @@
+.sass
+// Переменные
+$background-color: #f5f5dc // светло-бежевый
+$text-color: #2f4f4f       // тёмно-зелёный
+$button-save: #228b22      // тёплый зелёный
+$button-no: #8b0000        // тёмно-красный (бордовый)
+$button-edit: #00008b      // тёмно-синий
+$button-back: #4f4f4f      // угольный (тёмно-серый)
+$label-color: #555
+$border-color: #ddd
+$input-focus-color: #80c683
+$transition-speed: 0.3s
+$primary-color: #228b22 // Зеленый для кнопки "Сохранить"
+$secondary-color: #8b0000 // Красный для кнопки "Нет"
+$disabled-color: #cccccc // Серый для неактивной кнопки
+
+// Общий стиль для контейнера
+.container
+  max-width: 800px
+  margin: 50px auto
+  padding: 20px
+  background-color: $background-color
+  color: $text-color
+  font-family: Arial, sans-serif
+  border-radius: 10px
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1)
+
+// Стиль формы
+.form
+  display: flex
+  flex-direction: column
+  gap: 20px
+
+// Стиль для полей
+.fieldContainer,
+.fieldContainer_id,
+.fieldContainer_systems,
+.fieldContainer_endpoints
+  display: flex
+  flex-wrap: wrap
+  gap: 15px
+  margin-bottom: 10px
+  align-items: center
+
+// Стиль для label
+.label
+  font-size: 14px
+  font-weight: bold
+  color: $label-color
+  margin-bottom: 5px
+
+// Общий стиль для input и select
+.input,
+.input_id,
+.input_title,
+.select,
+.select_status
+  width: calc(50% - 10px)
+  padding: 10px
+  border: 1px solid $border-color
+  border-radius: 5px
+  background-color: #fff
+  color: $text-color
+  box-sizing: border-box
+
+  :focus
+    border-color: $input-focus-color
+    outline: none
+    box-shadow: 0 0 5px rgba($primary-color, 0.5)
+
+.input_id
+  width: calc(10% - 10px)
+
+.select_status
+  width: calc(40% - 10px)
+
+// Стиль для textarea
+.textarea
+  width: calc(100% - 20px)
+  min-height: 100px
+  padding: 10px
+  border: 1px solid $border-color
+  border-radius: 5px
+  background-color: #fff
+  color: $text-color
+
+  :focus
+    border-color: $input-focus-color
+    outline: none
+    box-shadow: 0 0 5px rgba($primary-color, 0.5)
+
+// Стиль для checkbox
+.input[type="checkbox"]
+  margin-right: 10px
+
+// Отключенные элементы
+.input_disabled,
+.textarea_disabled,
+.select_disabled
+  background-color: $disabled-color
+  color: darken($disabled-color, 20%)
+
+// Общий стиль для контейнера кнопок
+.buttonContainer
+  display: flex
+  justify-content: center
+  align-items: center
+  gap: 20px
+  margin-top: 20px
+
+// Общий стиль для кнопок
+.button
+  display: inline-block
+  padding: 10px 20px
+  font-size: 16px
+  font-weight: bold
+  text-transform: uppercase
+  letter-spacing: 1px
+  border-radius: 8px
+  border: none
+  cursor: pointer
+  transition: all 0.3s ease-in-out
+  position: relative
+  overflow: hidden
+
+  &::after
+    content: ''
+    position: absolute
+    top: 0
+    left: -100%
+    width: 100%
+    height: 100%
+    background-color: rgba(255, 255, 255, 0.2)
+    transition: left 0.4s ease-in-out
+
+  &:hover::after
+    left: 0
+
+  &:active
+    transform: scale(0.98)
+
+.disabledButton
+  background-color: $disabled-color !important
+  color: darken($disabled-color, 20%) !important
+  cursor: not-allowed
+
+// Стили для кнопки "Сохранить"
+.saveButton
+  background: linear-gradient(to right, $primary-color, darken($primary-color, 10%))
+  color: white
+
+  &:hover
+    background: linear-gradient(to right, lighten($primary-color, 10%), $primary-color)
+
+// Стили для кнопки "Нет"
+.noButton
+  background: linear-gradient(to right, $secondary-color, darken($secondary-color, 10%))
+  color: white
+
+  &:hover
+    background: linear-gradient(to right, lighten($secondary-color, 10%), $secondary-color)
+
+// Стили для кнопки "Редактировать"
+.editButton
+  background: linear-gradient(to right, #2196f3, #1976d2)
+  color: white
+
+  &:hover
+    background: linear-gradient(to right, lighten(#2196f3, 10%), #2196f3)
+
+// Стили для кнопки "Назад"
+.backButton
+  background: linear-gradient(to right, #9e9e9e, darken(#9e9e9e, 10%))
+  color: white
+
+  &:hover
+    background: linear-gradient(to right, lighten(#9e9e9e, 10%), #9e9e9e)

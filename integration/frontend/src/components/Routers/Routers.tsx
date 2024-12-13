@@ -5,7 +5,7 @@ import Registr from "../Registration/Registr";
 import ProtectedRouters from "./ProtectedRouters";
 import Users from "../Users/Users";
 import Orders_table from "../Orders_table/Orders_table";
-import Orders from "../Orders_edit/Orders";
+import Orders from "../Orders/Orders";
 import Systems from "../Systems/Systems";
 import Networks from "../Networks/Networks";
 import Roles from "../Roles/Roles";

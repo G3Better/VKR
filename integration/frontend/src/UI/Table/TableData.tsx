@@ -68,8 +68,9 @@ const TableData: React.FC<ITable> = ({
           <div className={styles.add_btn}>
           <Button
               variant="contained"
-              size="medium"
-              sx={{ width: "40ch" }}
+              color="success"
+              size="large"
+              sx={{ width: "25ch" }}
               component="a" // Используем компонент <a>
               href={"http://localhost:3000/orders/add"} // Динамически сформированный URL
               rel="noopener noreferrer" // Безопасность для внешних ссылок

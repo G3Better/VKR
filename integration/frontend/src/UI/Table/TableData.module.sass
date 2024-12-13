@@ -1,11 +1,17 @@
 .add_btn
   display: flex
   justify-content: flex-end
-  width: 90% !important
-  &>button
+  width: 90% // Удалено !important для лучшей управляемости
+  & > Button
     background-color: darkcyan
+    border: none
+    padding: 10px 20px
+    margin: 10px 0
+    color: white
+    cursor: pointer
     &:hover
       background-color: slategray
+
 .table
   position: absolute
   left: 50%
@@ -17,8 +23,16 @@
   border-radius: 20px
   max-height: 100%
   min-height: 400px
-  &_group
-    display: flex
-  &_cell
+  background-color: #f5f5f5 // Светлый фон для улучшения контраста текста
+
+  // Ячейка таблицы
+.table_cell
     font-weight: 800 !important
     font-size: 21px
+    line-height: 1.5 // Увеличенный межстрочный интервал для читабельности
+    color: #333 // Тёмно-серый цвет текста для лучшего контраста
+    text-align: left // Центрирование текста в ячейке
+    padding: 10px // Внутренние отступы для "воздуха"
+    word-wrap: break-word // Перенос слов, если текст слишком длинный
+    white-space: pre-wrap // Сохранение форматирования текста
+

@@ -5,12 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url("../public/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center ;
-  width: 100%;
-  height: 100vh;
+
+
+  /* Настройка фона */
+  background-image: url("../public/background.svg");
+  background-repeat: repeat; /* Фон не повторяется */
+  background-attachment: fixed; /* Фон фиксируется и не прокручивается */
 }
 
 code {

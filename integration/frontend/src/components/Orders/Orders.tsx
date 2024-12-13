@@ -117,7 +117,7 @@ const Orders: React.FC = () => {
   return (
       <>
         <Header />
-        <h2 className={styles.systems_title}>Orders</h2>
+        <h2 className={styles.systems_title}>Order</h2>
         <OrderData
             data={data}
             status_data={status_data}
