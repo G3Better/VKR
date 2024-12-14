@@ -1,25 +1,74 @@
+.body_bg
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100vh
+  background: rgba(0, 0, 0, 0.4) // Полупрозрачный затемнённый фон
+  z-index: 10
+
 .edit_modal
-  position: absolute
-  left: 50%
+  position: fixed
   top: 50%
-  transform: translateX(-50%) translateY(-50%)
-  background-color: #6697d9
-  border-radius: 20px
-  box-shadow: 0px 0px 20px #000
-  padding: 30px 20px 20px
-  color: #fff
+  left: 50%
+  transform: translate(-50%, -50%) // Центрирование окна
+  background-color: #ffffff // Светлый фон для окна
+  border-radius: 16px // Радиус углов аналогичен AddModal
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1) // Плавная тень для глубины
+  padding: 40px // Единый отступ
+  color: #333333 // Цвет текста для читаемости
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  z-index: 20
+
   &-block
     width: 100%
     display: flex
     flex-direction: column
-    align-items: left
-    &-date
+    align-items: flex-start // Выравнивание по левому краю для содержимого
+    gap: 10px // Единый промежуток между элементами
+
+    &-date,
     &-string,
-    &-number
-      margin: 10px 0 !important
-      padding:  0 !important
+    &-number,
     &-select
+      margin: 10px 0 !important // Отступы между элементами формы
+      padding: 0 !important
+
+  &-title
+    font-size: 24px // Размер заголовка чуть меньше, чем в .login_form
+    font-weight: bold
+    color: #1976d2 // Основной акцентный цвет (как в .login_form)
+    margin-bottom: 20px
+    text-align: center
+
   &-btn
     display: flex
     justify-content: space-between
-    margin-top: 10px
+    margin-top: 20px // Отступ сверху для кнопок
+    gap: 20px
+
+    Button
+      background-color: #1976d2 // Основной акцентный цвет кнопки
+      color: #fff
+      font-weight: bold
+      padding: 10px 20px
+      border-radius: 8px
+      transition: all 0.3s ease
+
+      &:hover
+        background-color: #145a9e // Более тёмный оттенок при наведении
+
+      &:disabled
+        background-color: #cccccc // Серый цвет для неактивной кнопки
+        color: #666666
+
+    a
+      color: #1976d2 // Ссылка того же цвета, что и акцентный текст
+      text-decoration: none
+      font-size: 14px
+
+      &:hover
+        text-decoration: underline

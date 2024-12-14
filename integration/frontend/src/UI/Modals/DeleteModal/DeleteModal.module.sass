@@ -1,24 +1,38 @@
 .delete_modal
-  position: absolute
+  position: fixed
   left: 50%
   top: 50%
-  transform: translateX(-50%) translateY(-50%)
-  background: #6697d9
-  padding: 30px 20px 10px 20px
+  transform: translate(-50%, -50%) // Центрирование окна
+  background-color: #6697d9 // Основной цвет фона
+  padding: 30px 20px // Отступы внутри окна
   width: 300px
-  height: 100px
-  border-radius: 20px
-  box-shadow: 0px 0px 20px #000
+  height: auto // Автоматическая высота под содержимое
+  border-radius: 16px // Радиус углов для современного дизайна
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2) // Плавная тень для глубины
+  z-index: 100
+
   &-title
     display: flex
     align-items: center
     justify-content: center
-    color: #ffffff
+    color: #ffffff // Белый текст для контраста
     font-size: 18px
-    margin-top: 0
+    margin: 0 0 20px // Отступ снизу для разделения с кнопками
+    text-align: center // Центрируем текст
 
 .buttton_group
   display: flex
-  justify-content: space-around
-  gap: 20px
-  box-shadow: none
+  justify-content: space-between // Распределяем кнопки по сторонам
+  gap: 10px // Промежуток между кнопками
+
+  & > button
+    background-color: #ffffff // Белый фон кнопок для контраста
+    color: #6697d9 // Основной цвет текста кнопок
+    font-weight: bold
+    border-radius: 8px // Радиус углов кнопок
+    padding: 8px 16px
+    transition: all 0.3s ease
+
+    &:hover
+      background-color: #ffffffcc // Лёгкая прозрачность при наведении
+      color: #4a78b0 // Тёмный оттенок основного цвета

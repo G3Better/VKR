@@ -36,7 +36,7 @@ const Header: React.FC = () => {
         {roles.admin === localStorage.getItem("role") && <NavLink to="/request_rates">Request Rates</NavLink>}
         {roles.admin === localStorage.getItem("role") && <NavLink to="/roles">Roles</NavLink>}
         {roles.admin === localStorage.getItem("role") && <NavLink to="/status">Status</NavLink>}
-        {roles.admin === localStorage.getItem("role") && <NavLink to="/endpoints">Endpoints</NavLink>}
+        <NavLink to="/endpoints">Endpoints</NavLink>
         <NavLink to="/systems">Systems</NavLink>
         <button onClick={handleClick} className={styles.fullName}>
           {fio}

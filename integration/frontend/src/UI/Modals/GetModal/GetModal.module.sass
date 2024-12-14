@@ -1,39 +1,37 @@
 .body_bg
-  top: 0
   position: fixed
+  top: 0
+  left: 0
   width: 100%
   height: 100vh
-  background: rgba(0,0,0,0.4)
+  background: rgba(0, 0, 0, 0.4) // Полупрозрачный затемнённый фон
+  z-index: 10
 
 .modal
-  position: absolute
-  left: 50%
+  position: fixed
   top: 50%
-  transform: translateX(-50%) translateY(-50%)
-  background: #6697d9
-  padding: 30px 20px 10px 20px
-  width: 300px
-  height: auto // Убираем фиксированную высоту, чтобы контент определял размер
-  border-radius: 20px
-  box-shadow: 0px 0px 20px #000
-  display: flex // Добавляем flex-контейнер для выравнивания содержимого
+  left: 50%
+  transform: translate(-50%, -50%) // Центрирование модального окна
+  background-color: #ffffff // Светлый фон для окна
+  border-radius: 16px // Радиус углов для современного дизайна
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1) // Плавная тень для глубины
+  padding: 30px // Отступы внутри окна для более просторного размещения контента
+  width: auto // Автоматическая ширина под контент
+  max-width: 400px // Ограничиваем максимальную ширину окна
+  height: auto // Высота определяется содержимым окна
+  display: flex // Flex-контейнер для управления содержимым
   flex-direction: column // Располагаем элементы по вертикали
-  align-items: center // Выравниваем элементы по центру горизонтально
+  align-items: center // Центрируем элементы горизонтально
 
 .group_btn
   display: flex
-  gap: 20px
-  box-shadow: none
+  gap: 15px // Промежуток между кнопками
   justify-content: center // Центрируем кнопки горизонтально
-  align-items: center // Центрируем кнопки вертикально
 
 .close_btn
   display: flex
-  justify-content: center // Центрируем кнопку "Close" горизонтально
-  margin-top: 10px
-  transition: 0.5s
+  justify-content: center // Центрируем кнопку "Close"
+  margin-top: 20px // Отступ сверху для кнопки закрытия
 
-  & > button
-    color: #ffffff
-    &:hover
-      background: #63007e !important
+  > button
+    background-color: #fff

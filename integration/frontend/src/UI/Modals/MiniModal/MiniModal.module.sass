@@ -1,34 +1,47 @@
-
 .body_bg
-  top: 0
   position: fixed
+  top: 0
+  left: 0
   width: 100%
   height: 100vh
-  background: rgba(0,0,0,0.4)
+  background: rgba(0, 0, 0, 0.4) // Полупрозрачный затемнённый фон
+  z-index: 10
+
 .modal
-  position: absolute
-  left: 50%
+  position: fixed
   top: 50%
-  transform: translateX(-50%) translateY(-50%)
-  background: #6697d9
-  padding: 30px 20px 10px 20px
+  left: 50%
+  transform: translate(-50%, -50%) // Центрирование модального окна
+  background-color: #ffffff // Светлый фон для окна
+  border-radius: 16px // Радиус углов для современного дизайна
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1) // Плавная тень для глубины
+  padding: 20px // Отступы внутри окна
   width: 300px
-  height: 100px
-  border-radius: 20px
-  box-shadow: 0px 0px 20px #000
+  height: auto // Убираем фиксированную высоту
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  z-index: 20
 
 .group_btn
   display: flex
-  gap: 20px
-  box-shadow: none
-  justify-content: space-between
+  gap: 10px // Промежуток между кнопками
+  justify-content: center // Центрируем кнопки горизонтально
 
 .close_btn
   display: flex
-  justify-content: center
+  justify-content: center // Центрируем кнопку "Close"
   margin-top: 10px
-  transition: 0.5s
+  transition: all 0.3s ease
+
   & > button
+    background-color: #1976d2 // Основной акцентный цвет кнопки
     color: #ffffff
+    font-weight: bold
+    padding: 8px 16px
+    border-radius: 8px
+    transition: all 0.3s ease
+
     &:hover
-      background: #63007e !important
+      background-color: #145a9e // Более тёмный оттенок при наведении

@@ -30,7 +30,7 @@ const Routers: React.FC = () => {
           {roles.client !== localStorage.getItem("role") && <Route path="/request_rates" element={<RequestRates />} />}
           {roles.client !== localStorage.getItem("role") && <Route path="/roles" element={<Roles />} />}
           {roles.client !== localStorage.getItem("role") && <Route path="/status" element={<Status />} />}
-          {roles.client !== localStorage.getItem("role") && <Route path="/endpoints" element={<Endpoints />} />}
+          <Route path="/endpoints" element={<Endpoints />} />
           <Route path="/orders" element={<Orders_table />} />
           <Route path="/order/:id" element={<Orders />} />
           <Route path="/orders/add" element={<Orders />} />
