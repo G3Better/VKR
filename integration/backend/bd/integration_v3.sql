@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Дек 10 2024 г., 22:53
+-- Время создания: Дек 15 2024 г., 12:54
 -- Версия сервера: 10.4.32-MariaDB
 -- Версия PHP: 8.2.12
 
@@ -83,7 +83,7 @@ CREATE TABLE `endpoints` (
 --
 
 INSERT INTO `endpoints` (`id_endpoint`, `name`, `ip`, `port`, `network`, `contour`, `system`, `description`) VALUES
-(7, 'https://test.qwerty1', '10.12.10.12', '443', 1, 1, 8, NULL),
+(7, 'https://test.qwerty1', '10.12.10.14', '443', 1, 1, 8, 'null'),
 (8, 'https://test.qwerty2', '10.13.10.13', '443', 1, 1, 8, 'null');
 
 -- --------------------------------------------------------
@@ -134,8 +134,10 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id_order`, `title`, `source_system`, `dest_system`, `request_rate`, `status`, `authorization`, `customer`, `test_endpoint`, `cert_endpoint`, `prod_endpoint`, `isAcceptedByIS`, `isAcceptedByCorpArch`, `isAcceptedByArc`, `description`, `swagger`) VALUES
-(13, 'Тестовая система 1->2', 7, 8, 2, 14, 1, 2, NULL, 7, 8, 0, 0, 1, 'Тестовая интеграция 1', ''),
-(14, 'Тестовая система 2->1', 8, 7, 5, 6, 3, 2, NULL, NULL, 8, 1, 0, 1, 'Тестовая интеграция 2', '');
+(13, 'Тестовая система 1->2', 7, 8, 2, 14, 1, 2, NULL, NULL, 7, 0, 0, 1, 'Тестовая интеграция 1', 'qwerty'),
+(14, 'Тестовая система 2->1', 8, 7, 6, 6, 3, 2, NULL, NULL, 8, 1, 0, 1, 'Тестовая интеграция 2', ''),
+(23, 'Тестовая система 2->1', 8, 8, 1, 12, 1, 2, NULL, 8, 7, 1, 0, 0, '', ''),
+(29, 'Тест', 8, 8, 5, 7, 3, 1, 8, NULL, 7, 0, 0, 0, 'qwerty 4', 'qwerty 4');
 
 -- --------------------------------------------------------
 
@@ -351,13 +353,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `endpoints`
 --
 ALTER TABLE `endpoints`
-  MODIFY `id_endpoint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_endpoint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT для таблицы `request_rates`
