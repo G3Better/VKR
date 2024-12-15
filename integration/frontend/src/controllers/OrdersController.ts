@@ -1,5 +1,4 @@
 import { deleteRequest, getRequest, postRequest, putRequest } from "../axios/http"
-import {getEndpoints} from "./EndpointsController";
 
 export const getOrders = async (id: string) => {
     const data = postRequest(`/api/order/${id}`, {}, { id });
@@ -11,8 +10,7 @@ export const getOrders = async (id: string) => {
 };
 
 export const addOrders = async (title: string, source: number, dest: number, rr: number, status: number, auth: number, customer: number, test: number, cert: number, prod: number, isAcceptedByIS: boolean, isAcceptedByCorpArch: boolean, isAcceptedByArc: boolean, desc: string, swagger:string) => {
-    console.log("some shit");
-    const res = await postRequest(`/api/o/add`, {}, { title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger });
+    const res = await postRequest(`/api/orders/add`, {}, { title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger });
     if (res) {
         return res;
     } else {

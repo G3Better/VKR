@@ -56,48 +56,6 @@ server.post('/api/signUp/:login', (req, res) => {
     })
 })
 
-// Получение всех Ip
-server.get("/api/ips", function(req, res){
-    pool.query("SELECT id_ip as id, ip as name, description FROM ip_address", function(err, data) {
-        if (err) return console.error(err);
-        if(!data.length) return res.sendStatus(400);
-        const newData = data.map((elem) => {
-            return { id: elem.id, name: elem.name, desc: elem.description}
-        })
-        res.json(newData);
-    });
-});
-
-// Удаление Ip
-server.delete("/api/ips/delete/:id", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { id } = req.body;
-    pool.query(`DELETE FROM ip_address WHERE id_ip='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Ip deleted');
-    });
-});
-
-// Редактирование Ip
-server.put("/api/ips/edit/:id", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { id, name, desc } = req.body;
-    pool.query(`UPDATE ip_address SET ip='${name}', description='${desc}' WHERE id_ip='${id}'`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Ip updated');
-    });
-});
-
-// Добавление Ip
-server.post("/api/ips/add", function (req, res) {
-    if (!req.body) return res.sendStatus(400);
-    const { name, desc } = req.body;
-    pool.query(`INSERT INTO ip_address(id_ip, ip, description) VALUES ('Null','${name}','${desc}')`, function(err, data) {
-        if (err) return console.error(err);
-        res.json('Ip added');
-    });
-});
-
 // Получение всех типов авторизации
 server.get("/api/authorizations", function(req, res){
     pool.query("SELECT `id_authorization` as id, `name` as name FROM `authorizations`", function(err, data) {
@@ -194,7 +152,7 @@ server.get("/api/responsible", function(req, res){
     });
 });
 
-// Получение всех Систем-Источников
+// Получение всех Систем
 server.get("/api/systems", function(req, res){
     pool.query("SELECT `id_system` as id, `name` as name, FIO as responsible FROM `systems`, `users` WHERE responsible=users.id_user;", function(err, data) {
         if (err) return console.error(err);
@@ -206,7 +164,7 @@ server.get("/api/systems", function(req, res){
     });
 });
 
-// Удаление Системы-Источника
+// Удаление Системы
 server.delete("/api/systems/delete/:id", function (req, res) {
     if(!req.body) return res.sendStatus(400);
     const { id } = req.body;
@@ -216,7 +174,7 @@ server.delete("/api/systems/delete/:id", function (req, res) {
     });
 });
 
-// Редактирование системы источника
+// Редактирование системы
 server.put("/api/systems/edit/:id", function (req, res) {
     if (!req.body) return res.sendStatus(400);
     const { id, name, responsible } = req.body;
@@ -226,7 +184,7 @@ server.put("/api/systems/edit/:id", function (req, res) {
     });
 });
 
-// Добавление системы источника
+// Добавление системы
 server.post("/api/systems/add", function (req, res) {
     if (!req.body) return res.sendStatus(400);
     const { name, responsible } = req.body;
@@ -446,9 +404,6 @@ server.post("/api/endpoints/add", function (req, res) {
     });
 });
 
-
-
-
 // Получение всех пользователей
 server.get("/api/users", function(req, res){
     pool.query("SELECT FIO as fio, roles.name as role, users.id_user as id, users.email as email, users.post as post, users.contacts as contacts FROM users INNER JOIN roles ON role=roles.id_role", function(err, data) {
@@ -540,10 +495,8 @@ server.put("/api/orders/edit/:id", function (req, res) {
 });
 
 // Добавление заказов
-server.post("/api/o/add", function (req, res) {
+server.post("/api/orders/add", function (req, res) {
     if(!req.body) return res.sendStatus(400);
-    console.log("something");
-    console.log(req.body);
     const { title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger } = req.body;
     pool.query("INSERT INTO orders(id_order, title, source_system, dest_system, request_rate, status, authorization, customer, test_endpoint, cert_endpoint, prod_endpoint, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, description, swagger) VALUES ('Null', '"+title+"','"+source+"','"+dest+"','"+rr+"','"+status+"','"+auth+"','"+customer+"',"+test+","+cert+",'"+prod+"','"+isAcceptedByIS+"','"+isAcceptedByCorpArch+"','"+isAcceptedByArc+"','"+desc+"','"+swagger+"')", function(err, data) {
         if (err) return console.error(err);
@@ -551,38 +504,38 @@ server.post("/api/o/add", function (req, res) {
     });
 });
 
-
-
-
-
-// Удаление заявки
-server.delete("/api/orders/delete/:id", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { id } = req.body;
-    pool.query("DELETE FROM `orders` WHERE id_order='"+id+"'", function(err, data) {
-        if (err) return console.error(err);
-        res.json('Order deleted');
-    });
-});
-
-// Редактирование заказов
-server.put("/api/order/edit/:id", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { id, title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger } = req.body;
-    console.log(req.body);
-    pool.query("UPDATE orders SET title='"+title+"', source_system="+source+", dest_system="+dest+", request_rate="+rr+", status="+status+", authorization="+auth+", customer="+customer+", test_endpoint="+test+", cert_endpoint="+cert+", prod_endpoint="+prod+", isAcceptedByIS="+isAcceptedByIS+", isAcceptedByCorpArch="+isAcceptedByCorpArch+", isAcceptedByArc="+isAcceptedByArc+", description='"+desc+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
-        if (err) return console.error(err);
-        res.json('orders updated');
-    });
-});
-
-// Добавление заказов
-server.post("/api/orders/add", function (req, res) {
-    if(!req.body) return res.sendStatus(400);
-    const { source_system, dest_system, request_rate, status, authorization, customer, description, swagger } = req.body;
-    pool.query("INSERT INTO `order` (id_order, source_system, dest_system, customer, authorization, request_rate, status, description, swagger) VALUES ('Null','"+source_system+"','"+dest_system+"','"+customer+"','"+authorization+"','"+request_rate+"','"+status+"','"+description+"','"+swagger+"')", function(err, data) {
-        if (err) return console.error(err);
-        res.json('orders updated');
-    });
-});
-
+//
+//
+//
+//
+// // Удаление заявки
+// server.delete("/api/orders/delete/:id", function (req, res) {
+//     if(!req.body) return res.sendStatus(400);
+//     const { id } = req.body;
+//     pool.query("DELETE FROM `orders` WHERE id_order='"+id+"'", function(err, data) {
+//         if (err) return console.error(err);
+//         res.json('Order deleted');
+//     });
+// });
+//
+// // Редактирование заказов
+// server.put("/api/order/edit/:id", function (req, res) {
+//     if(!req.body) return res.sendStatus(400);
+//     const { id, title, source, dest, rr, status, auth, customer, test, cert, prod, isAcceptedByIS, isAcceptedByCorpArch, isAcceptedByArc, desc, swagger } = req.body;
+//     console.log(req.body);
+//     pool.query("UPDATE orders SET title='"+title+"', source_system="+source+", dest_system="+dest+", request_rate="+rr+", status="+status+", authorization="+auth+", customer="+customer+", test_endpoint="+test+", cert_endpoint="+cert+", prod_endpoint="+prod+", isAcceptedByIS="+isAcceptedByIS+", isAcceptedByCorpArch="+isAcceptedByCorpArch+", isAcceptedByArc="+isAcceptedByArc+", description='"+desc+"', swagger='"+swagger+"' WHERE id_order='"+id+"'", function(err, data) {
+//         if (err) return console.error(err);
+//         res.json('orders updated');
+//     });
+// });
+//
+// // Добавление заказов
+// server.post("/api/orders/add", function (req, res) {
+//     if(!req.body) return res.sendStatus(400);
+//     const { source_system, dest_system, request_rate, status, authorization, customer, description, swagger } = req.body;
+//     pool.query("INSERT INTO `order` (id_order, source_system, dest_system, customer, authorization, request_rate, status, description, swagger) VALUES ('Null','"+source_system+"','"+dest_system+"','"+customer+"','"+authorization+"','"+request_rate+"','"+status+"','"+description+"','"+swagger+"')", function(err, data) {
+//         if (err) return console.error(err);
+//         res.json('orders updated');
+//     });
+// });
+//
