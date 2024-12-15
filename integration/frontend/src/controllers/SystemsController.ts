@@ -5,7 +5,7 @@ export const getSystems = async () => {
     if (data) {
         return data
     } else {
-        return 'Данных нет'
+        return 'Данные не были получены'
     }
 }
 
@@ -14,7 +14,7 @@ export const getResponsible = async () => {
     if (data) {
         return data
     } else {
-        return 'Данных нет'
+        return 'Данных не были получены'
     }
 }
 
@@ -23,7 +23,7 @@ export const deleteSystems = async (id: string) => {
     if (data) {
         return data;
     } else {
-        return "Не получилось удалить";
+        return "Удаление не выполнено, произошла ошибка";
     }
 };
 
@@ -32,7 +32,7 @@ export const editSystems = async (id: number, name: string, responsible: number)
     if (res) {
         return res;
     } else {
-        return "Не получилось отредактировать";
+        return "Редактирование не выполнено, произошла ошибка";
     }
 };
 
@@ -42,6 +42,6 @@ export const addSystems = async (name: string, responsible: number) => {
         getSystems()
         return res;
     } else {
-        return "Не получилось добавить новую систему";
+        return "Добавление не выполнено, произошла ошибка";
     }
 };
