@@ -13,9 +13,10 @@ import React from "react";
 import { Link as LinkRoute, useNavigate } from "react-router-dom";
 import { signUp } from "../../controllers/SignController";
 import styles from "./Registr.module.sass";
+import cryptoJS from "crypto-js";
 
 const Registr: React.FC = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const [login, setLogin] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -95,9 +96,9 @@ const Registr: React.FC = () => {
   );
 
   const handleSingUp = React.useCallback(async () => {
-    signUp(fio, email, post, contacts, login, password).then(()=>{
+    signUp(fio, email, post, contacts, login, cryptoJS.SHA256(password).toString()).then(()=>{
         localStorage.setItem("login", login);
-        localStorage.setItem("password", password);
+        localStorage.setItem("password", cryptoJS.SHA256(password).toString());
         navigate("/");
     }).catch((err)=>setError(err));
   }, [fio, email, post, contacts, login, navigate, password]);

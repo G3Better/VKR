@@ -13,6 +13,7 @@ import React from "react";
 import { Link as LinkRoute, useNavigate } from "react-router-dom";
 import { signIn } from "../../controllers/SignController";
 import styles from "./Login.module.sass";
+import cryptoJS from "crypto-js";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -49,10 +50,10 @@ const Login: React.FC = () => {
   );
 
   const handleSingIn = React.useCallback(async () => {
-    const data = await signIn(login, password);
+    const data = await signIn(login, cryptoJS.SHA256(password).toString());
     if (typeof data === "object") {
       localStorage.setItem("login", login);
-      localStorage.setItem("password", password);
+      localStorage.setItem("password", cryptoJS.SHA256(password).toString());
       localStorage.setItem("role", data.role);
       localStorage.setItem("id", data.id);
       localStorage.setItem("fio", data.fio);
