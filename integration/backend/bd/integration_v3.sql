@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Дек 15 2024 г., 12:54
+-- Время создания: Дек 17 2024 г., 20:25
 -- Версия сервера: 10.4.32-MariaDB
 -- Версия PHP: 8.2.12
 
@@ -59,7 +59,12 @@ CREATE TABLE `contours` (
 --
 
 INSERT INTO `contours` (`id_contour`, `name`) VALUES
-(1, 'Тестовый контур');
+(1, 'Тестовый контур Int'),
+(2, 'Сертификационный контур Int'),
+(3, 'Продуктовый контур Int'),
+(4, 'Тестовый контур DMZ'),
+(5, 'Сертификационный контур DMZ'),
+(6, 'Продуктивный контур DMZ');
 
 -- --------------------------------------------------------
 
@@ -84,7 +89,13 @@ CREATE TABLE `endpoints` (
 
 INSERT INTO `endpoints` (`id_endpoint`, `name`, `ip`, `port`, `network`, `contour`, `system`, `description`) VALUES
 (7, 'https://test.qwerty1', '10.12.10.14', '443', 1, 1, 8, 'null'),
-(8, 'https://test.qwerty2', '10.13.10.13', '443', 1, 1, 8, 'null');
+(8, 'https://test.qwerty2', '10.13.10.13', '443', 1, 1, 8, 'null'),
+(10, 'https://test.int.1', '10.48.12.01', '443', 1, 1, 7, NULL),
+(11, 'https://cert.int.1', '10.50.12.01', '443', 2, 2, 7, NULL),
+(12, 'https://prod.int.1', '10.51.12.01', '443', 3, 3, 7, NULL),
+(13, 'https://test.dmz.1', '10.222.14.02', '443', 4, 4, 7, NULL),
+(14, 'https://cert.dmz.1', '10.230.14.02', '443', 5, 5, 7, NULL),
+(15, 'https://prod.dmz.1', '10.231.14.02', '443', 6, 6, 7, NULL);
 
 -- --------------------------------------------------------
 
@@ -102,7 +113,12 @@ CREATE TABLE `networks` (
 --
 
 INSERT INTO `networks` (`id_network`, `name`) VALUES
-(1, 'VLAN 811');
+(1, 'VLAN 811'),
+(2, 'VLAN 911'),
+(3, 'VLAN 981'),
+(4, 'VLAN 1221'),
+(5, 'VLAN 1321'),
+(6, 'VLAN 1322');
 
 -- --------------------------------------------------------
 
@@ -134,10 +150,9 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id_order`, `title`, `source_system`, `dest_system`, `request_rate`, `status`, `authorization`, `customer`, `test_endpoint`, `cert_endpoint`, `prod_endpoint`, `isAcceptedByIS`, `isAcceptedByCorpArch`, `isAcceptedByArc`, `description`, `swagger`) VALUES
-(13, 'Тестовая система 1->2', 7, 8, 2, 14, 1, 2, NULL, NULL, 7, 0, 0, 1, 'Тестовая интеграция 1', 'qwerty'),
-(14, 'Тестовая система 2->1', 8, 7, 6, 6, 3, 2, NULL, NULL, 8, 1, 0, 1, 'Тестовая интеграция 2', ''),
-(23, 'Тестовая система 2->1', 8, 8, 1, 12, 1, 2, NULL, 8, 7, 1, 0, 0, '', ''),
-(29, 'Тест', 8, 8, 5, 7, 3, 1, 8, NULL, 7, 0, 0, 0, 'qwerty 4', 'qwerty 4');
+(30, 'Test Systems 1 -> 2', 9, 10, 6, 3, 1, 18, 10, NULL, 12, 1, 0, 0, 'test desc', NULL),
+(31, 'Test Systems 2 -> 1', 10, 9, 2, 12, 3, 18, NULL, NULL, 12, 0, 0, 0, 'Отклонена информационной безопасностью', NULL),
+(32, 'Test Systems 3 -> 4', 11, 12, 1, 13, 1, 18, 10, 11, 12, 1, 1, 1, 'Передача данных на сервер посредством rest api\r\nМетод get /changeList\r\nЗапускается один раз в день', NULL);
 
 -- --------------------------------------------------------
 
@@ -239,7 +254,11 @@ CREATE TABLE `systems` (
 
 INSERT INTO `systems` (`id_system`, `name`, `responsible`) VALUES
 (7, 'Тестовая система 1', 2),
-(8, 'Тестовая система 2', 1);
+(8, 'Тестовая система 2', 1),
+(9, 'Система тестов номер 1', 18),
+(10, 'Система тестов номер 2', 18),
+(11, 'Система тестов номер 3', 13),
+(12, 'Система тестов номер 4', 15);
 
 -- --------------------------------------------------------
 
@@ -255,7 +274,7 @@ CREATE TABLE `users` (
   `contacts` varchar(450) DEFAULT NULL,
   `role` int(11) NOT NULL,
   `login` varchar(45) NOT NULL,
-  `password` varchar(21) NOT NULL
+  `password` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -263,8 +282,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `FIO`, `email`, `post`, `contacts`, `role`, `login`, `password`) VALUES
-(1, 'Testov Test Testovich', 'admin@bk.ru', 'Главный администратор', '+79302873599', 5, 'admin', 'admin'),
-(2, 'Zakazov Zakaz Zakovich', 'zak@bk.ru', 'Директор проекта', '+473892156737564 Telegram: Какой-то', 1, 'zak', 'zak123');
+(1, 'Testov Test Testovich', 'admin@bk.ru', 'Главный администратор', '+79302873599', 5, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'),
+(2, 'Zakazov Zakaz Zakovich', 'zak@bk.ru', 'Директор проекта', '+473892156737564 Telegram: Какой-то', 1, 'zak', '76207a2567e8da129e2eb0aefde7262e18867e5328622fecea913ffd8a385e58'),
+(13, 'Test User 1', 'user1@test.ru', 'Менеджер группы', NULL, 2, 'user1', '0a041b9462caa4a31bac3567e0b6e6fd9100787db2ab433d96f6d178cabfce90'),
+(14, 'Test User 2', 'user2@test.ru', 'Специалист информационной безопасности', NULL, 7, 'user2', '6025d18fe48abd45168528f18a82e265dd98d421a7084aa09f61b341703901a3'),
+(15, 'Test User 3', 'user3@test.ru', 'Старший корпоративный архитектор', NULL, 3, 'user3', '5860faf02b6bc6222ba5aca523560f0e364ccd8b67bee486fe8bf7c01d492ccb'),
+(16, 'Test User 4', 'user4@test.ru', 'Архитектор', NULL, 4, 'user4', '5269ef980de47819ba3d14340f4665262c41e933dc92c1a27dd5d01b047ac80e'),
+(17, 'Test User 5', 'user5@test.ru', 'Разработчик', NULL, 6, 'user5', '5a39bead318f306939acb1d016647be2e38c6501c58367fdb3e9f52542aa2442'),
+(18, 'Test User 6', 'user6@test.ru', 'Product Owner', NULL, 2, 'user6', 'ecb48a1cc94f951252ec462fe9ecc55c3ef123fadfe935661396c26a45a5809d');
 
 --
 -- Индексы сохранённых таблиц
@@ -350,16 +375,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `contours`
+--
+ALTER TABLE `contours`
+  MODIFY `id_contour` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT для таблицы `endpoints`
 --
 ALTER TABLE `endpoints`
-  MODIFY `id_endpoint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_endpoint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT для таблицы `networks`
+--
+ALTER TABLE `networks`
+  MODIFY `id_network` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT для таблицы `request_rates`
@@ -383,13 +420,13 @@ ALTER TABLE `status`
 -- AUTO_INCREMENT для таблицы `systems`
 --
 ALTER TABLE `systems`
-  MODIFY `id_system` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_system` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
